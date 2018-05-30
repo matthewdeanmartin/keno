@@ -12,6 +12,9 @@ from keno.ticket import Ticket
 
 
 class GameRunner(object):
+    """
+    Represents top level config for similation
+    """
     def __init__(self, max_ticket_price,
                  max_ticket_types, max_plays_with_ticket_type,
                  max_loss, sufficient_winnings, max_generations):

@@ -3,10 +3,17 @@
 # TODO: This will haunt me until I write the tests.
 """
 
-# slow test!
-def test():
+from keno.game_runner import GameRunner
+def test_fast_game():
     """
-    mumble muble
+    Set up to keep variables out of global namespace
     :return:
     """
-    # keno.utils.run()
+    # 1/2 second game on my mac
+    runner = GameRunner(max_ticket_price=500,
+                        max_ticket_types=500,
+                        max_plays_with_ticket_type=50,
+                        max_loss=25,
+                        sufficient_winnings=25,
+                        max_generations=2)
+    runner.run()
