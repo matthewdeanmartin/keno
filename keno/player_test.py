@@ -12,3 +12,11 @@ def test_player():
     """
     player = Player(100, 100, 100)
     player.go()
+
+
+def test_player_str():
+    """
+    Basic call
+    """
+    player = Player(100, 100, 100)
+    assert "" != str(player)

@@ -4,3 +4,5 @@ pynt-contrib
 nose
 sphinx
 pylint
+pytest
+pytest-cov

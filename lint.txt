@@ -12,15 +12,17 @@ R:224, 4: Method could be a function (no-self-use)
 R:  9, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
 C: 57, 4: Method name "go" doesn't conform to snake_case naming style (invalid-name)
 C: 57, 4: Missing method docstring (missing-docstring)
-W: 69,16: Using a conditional statement with a constant value (using-constant-test)
+************* Module keno.player_test
+C: 22,11: Comparison should be str(player) != '' (misplaced-comparison-constant)
 ************* Module keno.ticket
 W:113, 8: No exception type(s) specified (bare-except)
 W:143, 8: No exception type(s) specified (bare-except)
 W:188, 8: No exception type(s) specified (bare-except)
 E:200,32: Too many arguments for format string (too-many-format-args)
 ************* Module keno.ticket_test
-C: 16, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
-C: 24, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
+C: 22,11: Comparison should be str(ticket) != '' (misplaced-comparison-constant)
+C: 24, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
+C: 54, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
 ************* Module keno.utils
 W: 33, 0: TODO: check minimum winning on 1 ticket!! (fixme)
 W: 42, 0: Bad indentation. Found 13 spaces, expected 12 (bad-indentation)
@@ -32,8 +34,7 @@ R: 14, 0: Too many branches (22/12) (too-many-branches)
 R: 14, 0: Too many statements (68/50) (too-many-statements)
 ************* Module keno.utils_test
 W:  3, 0: TODO: This will haunt me until I write the tests. (fixme)
-C:  8, 0: Missing function docstring (missing-docstring)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.12/10 (previous run: 8.81/10, +0.32)
+Your code has been rated at 9.16/10 (previous run: 9.19/10, -0.04)
 

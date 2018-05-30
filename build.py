@@ -9,6 +9,7 @@ mini-first-impressions review:
 - if I actually used it, I would probably have 50% of code in tiny bash scripts, 1 per task.
 - loops, if-blocks, etc less painful than bash.
 - no easy way to redirect output of script to file
+- no way to use this to set up venvs, nor to do deployment (needs venv to run this!)
 """
 from pynt import task
 from pyntcontrib import execute, safe_cd
@@ -45,11 +46,19 @@ def nose_tests():
     execute("python", "-m", "nose", PROJECT_NAME)
 
 @task(nose_tests)
+def coverage():
+    execute("py.test", *("keno --cov=keno --cov-report html:coverage --verbose".split(" ")))
+
+@task(nose_tests)
 def docs():
     with safe_cd("docs"):
         execute("make", "html")
 
-@task(docs)
+@task()
+def pip_check():
+    execute("pip", "check")
+
+@task(docs, nose_tests, pip_check, compile, lint)
 def package():
     execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
     execute("python", "setup.py", "sdist")

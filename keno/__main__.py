@@ -2,5 +2,7 @@
 """
 Code to allow launching module directly with python -m keno
 """
-import keno.utils
-keno.utils.run()
+from keno.game_runner import GameRunner
+def run():
+    runner = GameRunner(50)
+    runner.run()
