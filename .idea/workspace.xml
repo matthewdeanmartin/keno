@@ -26,12 +26,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2ff8d003-a5b6-4803-9079-37ae4cdd814b" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/.prospector/keno_style.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pip.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChangeLog" beforeDir="false" afterPath="$PROJECT_DIR$/ChangeLog" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/keno/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/keno/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/keno/game_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/keno/game_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/keno/game_runner_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/keno/game_runner_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.py" beforeDir="false" afterPath="$PROJECT_DIR$/build.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/init.sh" beforeDir="false" afterPath="$PROJECT_DIR$/init.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lint.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lint.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements_dev.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements_dev.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -57,60 +58,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="requirements_dev.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/requirements_dev.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
-              <caret line="49" column="41" selection-start-line="49" selection-start-column="41" selection-end-line="49" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ticket_test.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/keno/ticket_test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="46">
-              <caret line="8" selection-start-line="8" selection-end-line="13" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="player_test.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/keno/player_test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="27" selection-start-line="21" selection-start-column="27" selection-end-line="21" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ticket.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/keno/ticket.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="game_runner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/keno/game_runner.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -129,11 +76,65 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__main__.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="__main__.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/keno/__main__.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="272">
-              <caret line="16" column="16" lean-forward="true" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+              <caret line="16" column="16" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="keno_style.yaml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.prospector/keno_style.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="21" column="11" selection-start-line="21" selection-start-column="11" selection-end-line="21" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="run_pylint.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/run_pylint.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="requirements_dev.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/requirements_dev.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="182">
+              <caret line="64" column="58" selection-start-line="64" selection-start-column="58" selection-end-line="64" selection-end-column="58" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pip.conf" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pip.conf">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="init.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/init.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="22" column="2" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
             </state>
           </provider>
         </entry>
@@ -184,7 +185,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/init.sh" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/docs/source/index.rst" />
         <option value="$PROJECT_DIR$/setup.cfg" />
@@ -202,14 +202,17 @@
         <option value="$PROJECT_DIR$/keno/ticket.py" />
         <option value="$PROJECT_DIR$/keno/player.py" />
         <option value="$PROJECT_DIR$/keno/utils_test.py" />
-        <option value="$PROJECT_DIR$/requirements_dev.txt" />
-        <option value="$PROJECT_DIR$/build.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/keno/ticket_test.py" />
         <option value="$PROJECT_DIR$/keno/player_test.py" />
         <option value="$PROJECT_DIR$/keno/game_runner.py" />
         <option value="$PROJECT_DIR$/keno/__main__.py" />
         <option value="$PROJECT_DIR$/keno/game_runner_test.py" />
+        <option value="$PROJECT_DIR$/pip.conf" />
+        <option value="$PROJECT_DIR$/init.sh" />
+        <option value="$PROJECT_DIR$/.prospector/keno_style.yaml" />
+        <option value="$PROJECT_DIR$/requirements_dev.txt" />
+        <option value="$PROJECT_DIR$/build.py" />
       </list>
     </option>
   </component>
@@ -275,7 +278,7 @@
             <path>
               <item name="keno" type="b2602c69:ProjectViewProjectNode" />
               <item name="keno" type="462c0819:PsiDirectoryNode" />
-              <item name="keno" type="462c0819:PsiDirectoryNode" />
+              <item name=".prospector" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="keno" type="b2602c69:ProjectViewProjectNode" />
@@ -443,8 +446,8 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.4857497" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.2961586" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14949037" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.41759604" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14949037" />
       <window_info anchor="bottom" id="Docker" order="7" />
       <window_info anchor="bottom" id="TeamCity" order="7" />
       <window_info anchor="right" id="Database" order="3" />
@@ -599,13 +602,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_pylint.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/keno/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -627,13 +623,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/init.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="18" lean-forward="true" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/keno/game_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -651,20 +640,6 @@
     <entry file="file://$PROJECT_DIR$/lint.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-102" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/requirements_dev.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="49" column="41" selection-start-line="49" selection-start-column="41" selection-end-line="49" selection-end-column="41" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
@@ -719,7 +694,49 @@
     <entry file="file://$PROJECT_DIR$/keno/__main__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
-          <caret line="16" column="16" lean-forward="true" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+          <caret line="16" column="16" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_pylint.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pip.conf">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/init.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="2" selection-start-line="22" selection-start-column="2" selection-end-line="22" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.prospector/keno_style.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="21" column="11" selection-start-line="21" selection-start-column="11" selection-end-line="21" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements_dev.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="64" column="58" selection-start-line="64" selection-start-column="58" selection-end-line="64" selection-end-column="58" />
         </state>
       </provider>
     </entry>

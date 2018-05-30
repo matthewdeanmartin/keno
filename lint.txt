@@ -45,5 +45,5 @@ C: 24, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform t
 C: 54, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
 
 ------------------------------------------------------------------
-Your code has been rated at 8.49/10 (previous run: 8.48/10, +0.01)
+Your code has been rated at 8.49/10 (previous run: 8.49/10, +0.00)
 

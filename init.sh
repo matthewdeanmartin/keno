@@ -11,7 +11,8 @@ go()
 
 dev_installs()
 {
-    pip install -r requirements_dev.txt
+    # pyflakes for some reason hangs if not using no-cache-dir
+    pip install -r requirements_dev.txt --no-cache-dir
 }
 
 conda_installs()

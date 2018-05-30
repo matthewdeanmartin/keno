@@ -13,7 +13,6 @@ mini-first-impressions review:
 """
 from pynt import task
 from pyntcontrib import execute, safe_cd
-from pathlib import Path
 
 PROJECT_NAME = "keno"
 
@@ -22,7 +21,10 @@ def clean():
     for folder in ["build", "dist", "keno.egg-info"]:
         execute("rm", "-rf", folder)
 
-    execute("rm", "lint.txt")
+    try:
+        execute("rm", "lint.txt")
+    except:
+        pass
 
 @task(clean)
 def compile():
@@ -30,16 +32,18 @@ def compile():
 
 @task(compile)
 def lint():
-    # if not Path(".rcfile=pylintrc.ini").is_file():
-    #     execute("pylint", "--generate-rcfile>pylintrc.ini")
+    # sort of redundant to above...
     #
-    # execute("lint_it.sh","--rcfile=pylintrc.ini>lint.txt" )
+    execute("prospector",
+            *("{0} --profile keno_style --pylint-config-file=pylintrc.ini --profile-path=.prospector"
+              .format(PROJECT_NAME)
+              .split(" ")))
+
     execute("./run_pylint.sh")
 
     num_lines = sum(1 for line in open('lint.txt'))
     if num_lines> 100:
         raise TypeError("Too many lines of lint : {0}".format(num_lines))
-
 
 @task(lint)
 def nose_tests():
@@ -57,11 +61,13 @@ def docs():
 @task()
 def pip_check():
     execute("pip", "check")
+    execute("safety", "check")
+    execute("safety", "check", "-r", "requirements_dev.txt")
 
 @task(docs, nose_tests, pip_check, compile, lint)
 def package():
     execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
-    execute("python", "setup.py", "sdist")
+    execute("python", "setup.py", "sdist", "--formats=gztar,zip")
 
 @task()
 def echo(*args, **kwargs):

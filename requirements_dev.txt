@@ -6,3 +6,5 @@ sphinx
 pylint
 pytest
 pytest-cov
+prospector
+safety
