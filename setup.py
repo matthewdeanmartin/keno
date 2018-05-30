@@ -112,7 +112,7 @@ setup(
     install_requires=required,
     extras_require={},
     include_package_data=True,
-    license='Copyright 2018. All Rights Reserved.',
+    license='See git repo',
     keywords="ui",
     classifiers=[
         'Programming Language :: Python',
@@ -124,6 +124,5 @@ setup(
     setup_requires=['pbr'],
     pbr=True,
 
-    data_files=[('src_libs3', ['../src_libs3/*']),
-                ('src_third_party_apps3',['../src_third_party_apps3/*'])]
+    data_files=[]
 )

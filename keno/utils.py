@@ -1,19 +1,21 @@
 # coding=utf-8
 """
-basics
+Poorly named, this is the main code.
 """
 import copy
-import random
+import sys
 from collections import OrderedDict
 
-from keno.game import Keno, TicketValidator, NumbersMachine
+from keno.game import Keno
 from keno.player import Player
 from keno.ticket import Ticket
 
-import sys
-
 
 def run():
+    """
+    Execute main simulator
+    :return:
+    """
     tickets = []
 
     # vacuously, the more you bet, the more likley you are to win something

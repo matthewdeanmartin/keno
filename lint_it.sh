@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-
-python3 -m keno
+pylint "$@"
+exit 0

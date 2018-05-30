@@ -2,8 +2,8 @@
 """
 
 """
-from keno.ticket import Ticket
-from keno.game import Keno, TicketValidator
+from keno.game import Keno
+from keno.ticket import Ticket, TicketValidator
 
 
 class Player(object):
@@ -15,6 +15,12 @@ class Player(object):
     """
 
     def __init__(self, max_loss, stop_at, max_tickets):
+        """
+
+        :type max_loss: int
+        :type stop_at: int
+        :type max_tickets:int
+        """
         self.ticket = Ticket()
         self.ticket.randomize_ticket()
         self.max_loss = max_loss

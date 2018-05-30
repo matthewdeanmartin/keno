@@ -1,0 +1,6 @@
+pbr
+pynt
+pynt-contrib
+nose
+sphinx
+pylint

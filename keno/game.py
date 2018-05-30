@@ -1,23 +1,29 @@
 # coding=utf-8
 """
 
-The Keno game, independent of player
+The Keno game, independent of player.
 
 """
 try:
     import numpy as np
-    have_numpy = True
+    HAVE_NUMPY = True
 except:
-    have_numpy = False
+    print("We don't have numpy, simulation will be slower, but startup time might be a bit faster")
+    HAVE_NUMPY = False
 
-import copy
 import random
 
-eighty_numbers = list(range(1, 80))
+EIGHTY_NUMBERS = list(range(1, 80))
 
 class NumbersMachine(object):
-    # Doh! Should just be a function.
+    """
+    Abstract number drawing machine.
+    """
     def __init__(self, spots):
+        """
+        This maybe could be a Callable or a def.
+        :type spots: int
+        """
         if spots == 0 or spots > 21:
             raise TypeError("What game is this? {0}".format(spots))
         self.spots = spots
@@ -28,17 +34,17 @@ class NumbersMachine(object):
         user picks 1 - 10, but lotto draws 20!
         :return:
         """
-        global eighty_numbers
+        global EIGHTY_NUMBERS
 
         # sample might be faster?
-        if not have_numpy:
+        if not HAVE_NUMPY:
             # slower
-            random.shuffle(eighty_numbers)
+            random.shuffle(EIGHTY_NUMBERS)
         else:
             # faster
-            np.random.shuffle(eighty_numbers)
+            np.random.shuffle(EIGHTY_NUMBERS)
 
-        drawing = eighty_numbers[0:self.spots]
+        drawing = EIGHTY_NUMBERS[0:self.spots]
         list.sort(drawing)
         return drawing
 
@@ -49,6 +55,10 @@ class Keno(object):
 
     @property
     def ticket_ranges(self):
+        """
+        Make sure this doesn't accidentally get mutated.
+        :type: dict[str,list[int|bool]]
+        """
         return self._ticket_ranges.copy()
 
     def __init__(self):
@@ -62,7 +72,7 @@ class Keno(object):
         }
         self.pay_off_chart = {
             # lose 40% in 1 million plays
-            10:{
+            10: {
                 10:100000,
                 9:4000,
                 8:400,
@@ -71,7 +81,7 @@ class Keno(object):
                 5:2,
                 0:4
             },
-            9:{
+            9: {
                 9:25000,
                 8:2500,
                 7:100,
@@ -122,6 +132,12 @@ class Keno(object):
         }
 
     def can_i_win_this_much(self, ticket, jackpot):
+        """
+
+        :type ticket: Ticket
+        :type jackpot: int
+        :rtype: bool
+        """
         max_value = 0
         for key, value in self.possible_pay_off_for_ticket_per_game(ticket).items():
             if isinstance(value, (set, list)):
@@ -199,7 +215,7 @@ class Keno(object):
         # return 1
 
     def check_for_super_bonus(self, ten_numbers):
-        odds ={
+        odds = {
             2:2.4,
             3:7.1,
             4:3.9,
@@ -210,7 +226,7 @@ class Keno(object):
             20:930.2
         }
         for key, value in odds.items():
-            if random.randint(0,value*10)<10:
+            if random.randint(0, value * 10) < 10:
                 return key
         # guaranteed some sort of mutliplier
         return 2
@@ -260,54 +276,3 @@ class Keno(object):
         else:
             return winnings * ticket.bet
 
-
-class TicketValidator(object):
-    def __init__(self):
-        self.md_keno = Keno()
-
-    def is_good_ticket(self, ticket):
-        try:
-            self.check_ticket(ticket)
-            self.check_all_prizes_winnable(ticket)
-            return True
-        except:
-            return False
-    def check_ticket(self, ticket):
-        """
-
-        :type ticket: Ticket
-        :rtype: None
-        """
-
-        for key, value in self.md_keno.ticket_ranges.items():
-            if getattr(ticket, key) not in self.md_keno.ticket_ranges[key]:
-                raise TypeError("Bad ticket {0} can be {1}, but got".format(key, value, getattr(ticket, key)))
-
-        # bonus rules
-        if ticket.bonus and ticket.super_bonus:
-            raise TypeError("Can't do bonus and super bonus at same time.")
-
-        # max ticket rules
-        """
-        $100 is the maximum Keno wager per playslip.
-        $200 is the maximum Keno wager per playslip when the Bonus option is selected.
-        $300 is the maximum Keno wager per playslip when the Super Bonus option is selected.
-        """
-        if ticket.bet * ticket.games > 100:
-            raise TypeError("Too much for this slip! ${0}".format(ticket.bet * ticket.games))
-        if ticket.bonus and ticket.bet * 2 * ticket.games > 200:
-            raise TypeError("Too much for this slip! ${0}".format(ticket.bet * 2 * ticket.games))
-        if ticket.super_bonus and ticket.bet * 3 * ticket.games > 300:
-            raise TypeError("Too much for this slip ${0}".format(ticket.bet * 3 * ticket.games))
-
-    def check_all_prizes_winnable(self, ticket):
-        """
-
-        :type ticket: Ticket
-        :rtype: None
-        """
-        # don't bet if max prize is unwinnable (
-        if ticket.bonus and self.md_keno.pay_off_chart[ticket.spots][ticket.spots] * ticket.bet * 10 > 100000:
-            raise TypeError("Why? Max payout is 100K")
-        if ticket.bonus and self.md_keno.pay_off_chart[ticket.spots][ticket.spots] * ticket.bet * 20 > 100000:
-            raise TypeError("Why? Max payout is 100K")
