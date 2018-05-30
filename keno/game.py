@@ -139,7 +139,7 @@ class Keno(object):
         :rtype: bool
         """
         max_value = 0
-        for key, value in self.possible_pay_off_for_ticket_per_game(ticket).items():
+        for value in self.possible_pay_off_for_ticket_per_game(ticket).values():
             if isinstance(value, (set, list)):
                 for inner_value in value:
                     max_value = max(max_value, inner_value)
@@ -162,28 +162,31 @@ class Keno(object):
             for key, value in chart.items():
                 multipliers = [10, 5, 4, 3]
                 totals = set()
-                for m in multipliers:
-                    totals.add(m * chart[key])
+                for multiplier in multipliers:
+                    totals.add(multiplier * chart[key])
                 chart[key] = totals
         elif ticket.super_bonus:
             for key, value in chart.items():
-                multipliers= [20, 12, 10, 6, 5, 4, 3, 2]
+                multipliers = [20, 12, 10, 6, 5, 4, 3, 2]
                 totals = set()
-                for m in multipliers:
-                    totals.add(m * chart[key])
+                for multiplier in multipliers:
+                    totals.add(multiplier * chart[key])
                 chart[key] = totals
 
         return chart
 
 
-
     def state_drawing(self):
+        """
+        The numbers drawn by state, the winning numbers
+        :type:
+        """
         machine = NumbersMachine(20)
         return machine.draw()
 
     def check_single_winning(self, picks, state_drawing):
         """
-
+        Which numbers in picks are in state drawing?
         :type picks: list[int]|set[int]
         :type state_drawing: list[int]|set[int]
         :rtype: set[int]
@@ -195,7 +198,11 @@ class Keno(object):
                 matches.add(pick)
         return matches
 
-    def check_for_bonus(self, ten_numbers):
+    def check_for_bonus(self):
+        """
+        Rule confusing...I think this is determined as a function of drawying and/or user selections
+        :rtype: int
+        """
         odds = {
 
             3: 3,
@@ -214,7 +221,11 @@ class Keno(object):
         #         return i
         # return 1
 
-    def check_for_super_bonus(self, ten_numbers):
+    def check_for_super_bonus(self):
+        """
+        Rule confusing...I think this is determined as a function of drawying and/or user selections
+        :rtype: int
+        """
         odds = {
             2:2.4,
             3:7.1,
@@ -231,25 +242,18 @@ class Keno(object):
         # guaranteed some sort of mutliplier
         return 2
 
-        # WRONG
-        # return random.randint(0,len([20, 12, 10, 6, 5, 4, 3, 2]))
-        # WRONG
-        # for i in [20, 12, 10, 6, 5, 4, 3, 2]:
-        #     if i in ten_numbers:
-        #         return i
-        # return 1
     def calculate_payoff_n_drawings(self, ticket):
         """
         A multi-game ticket, just like in MD.
         :type ticket: Ticket
         :return:
         """
-        so_far =0
+        so_far = 0
         for i in range(0, ticket.games):
             # each game is a new set of numbers.
             state_drawing = self.state_drawing()
             so_far += self.calculate_payoff_one_drawing(state_drawing, ticket)
-            if i>ticket.games:
+            if i > ticket.games:
                 raise  TypeError("1 off error")
 
         return so_far
@@ -259,7 +263,7 @@ class Keno(object):
         One drawing, a ticket can conver many drawings
         :type state_drawing: list[int]|set[int]
         :type ticket: Ticket
-        :return:
+        :rtype: int
         """
         matches = self.check_single_winning(ticket.numbers, state_drawing)
         try:
@@ -268,11 +272,12 @@ class Keno(object):
             return 0
 
         if ticket.bonus:
-            factor = self.check_for_bonus(state_drawing)
+            factor = self.check_for_bonus()
             return winnings * ticket.bet * factor
-        elif ticket.super_bonus:
-            factor = self.check_for_super_bonus(state_drawing)
+
+        if ticket.super_bonus:
+            factor = self.check_for_super_bonus()
             return winnings * ticket.bet * factor
-        else:
-            return winnings * ticket.bet
+
+        return winnings * ticket.bet
 

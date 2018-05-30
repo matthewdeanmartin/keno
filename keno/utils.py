@@ -48,7 +48,7 @@ def run():
     winners = {
         0:tickets,
     }
-    """:type: list[Ticket]"""
+    """:type: dict[int,list[Ticket]]"""
 
     md_keno = Keno()
     for generation in range(0, 20):
@@ -61,12 +61,12 @@ def run():
         i = 0
         print("Now playing {0} tickets ".format(len(current_tickets)))
         for ticket in current_tickets:
-            i +=1
+            i += 1
             jackpot = 2500
             if not md_keno.can_i_win_this_much(ticket, jackpot):
                 # loser ticket.
                 continue
-            if ticket.price()> max_ticket_price:
+            if ticket.price() > max_ticket_price:
                 # costs too much now... loser
                 continue
 
@@ -77,7 +77,7 @@ def run():
             player.go()
             if player.good_game():
                 winners[generation + 1].append(ticket)
-                if i<6:
+                if i < 6:
                     print("------Good Game------" + str(ticket.price() * player.tickets_played))
                 else:
                     print('.', end='')
@@ -97,27 +97,24 @@ def run():
         print("Crossing Tickets")
         upcoming_generation = winners[generation+1]
 
-        if len(upcoming_generation)>=3:
+        if len(upcoming_generation) >= 3:
             for index in range(0, len(upcoming_generation)-1, 2):
                 upcoming_generation[index].geneticly_merge_ticket(upcoming_generation[index+1], max_ticket_price)
 
 
             print("Mutating Tickets")
-            if len(upcoming_generation)>1000:
+            if len(upcoming_generation) > 1000:
                 # don't mutate all, mutation is very deadly.
                 for ticket in upcoming_generation[0:500]:
                       ticket.mutate_ticket(.1)
 
             # children, otherwise pop shrinks too fast
-            if len(upcoming_generation)<len(tickets)+500:
+            if len(upcoming_generation) < len(tickets)+500:
                 children = []
                 for ticket in upcoming_generation:
                     children.append(copy.deepcopy(ticket))
 
                 upcoming_generation.extend(children)
-
-
-
         else:
             print("Not enough tickets left for genetic activity")
             break
@@ -137,20 +134,8 @@ def run():
         print("------{0}------".format(occurance))
         print(winner)
         print("Ticket Price: {0}".format(winner.price()))
-        #print(player)
         print("Payoff range " + str(md_keno.possible_pay_off_for_ticket_per_game(winner)))
         print("-----")
-
-
-    # for winner in winners[max(winners.keys())]:
-    #     print("------Good Game------")
-    #     print(winner)
-    #     print("Ticket Price: {0}".format(winner.price()))
-    #     #print(player)
-    #     print("-----")
-    #     print(md_keno.possible_pay_off_for_ticket_per_game(winner))
-
-
 
 
 if __name__ == "__main__":

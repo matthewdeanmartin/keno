@@ -29,10 +29,18 @@ class Ticket(object):
         # self.constant_numbers = False
 
     def pick(self):
+        """
+        Generate random numbers, but other strategic decisions.
+        :return:
+        """
         machine = NumbersMachine(self.spots)
         self.numbers = machine.draw()
 
     def price(self):
+        """
+        How much does this ticket cost?
+        :rtype: int
+        """
         base = self.games * self.bet
         if self.bonus:
             return base * 2
@@ -41,11 +49,15 @@ class Ticket(object):
         return base
 
     def randomize_ticket(self):
+        """
+        Randomize self
+        :return:
+        """
 
-        tv = TicketValidator()
+        validator = TicketValidator()
 
         i = 0
-        while i == 0 or not tv.is_good_ticket(self):
+        while i == 0 or not validator.is_good_ticket(self):
             i += 1
             for key, value in self.rules.ticket_ranges.items():
                 setattr(self, key, self.rules.ticket_ranges[key][random.randint(0, len(value)-1)])
@@ -60,9 +72,6 @@ class Ticket(object):
             if i > 100:
                 raise TypeError("Can't generate a good ticket!")
 
-
-
-
     def __str__(self):
         """
         Pretty printer
@@ -71,7 +80,7 @@ class Ticket(object):
         result = "----- Ticket ------\n"
         md_keno = Keno()
 
-        for key, value in sorted(md_keno.ticket_ranges.items()):
+        for key in sorted(md_keno.ticket_ranges):
             result += "{0}, {1}".format(key, getattr(self, key))
             result += "\n"
         return result
@@ -91,14 +100,14 @@ class Ticket(object):
         keys = [x for x in self.rules.ticket_ranges.keys()]
         random.shuffle(keys)
         for key in keys:
-            if random.randint(0,1) == 1:
+            if random.randint(0, 1) == 1:
                 setattr(self, key, getattr(ticket, key))
 
         try:
             # This mutant valid?
-            tv = TicketValidator()
-            tv.check_all_prizes_winnable(self)
-            tv.check_ticket(self)
+            validator = TicketValidator()
+            validator.check_all_prizes_winnable(self)
+            validator.check_ticket(self)
             if self.price() > max_price:
                 raise TypeError("nope")
         except:
@@ -128,9 +137,9 @@ class Ticket(object):
                 break
         try:
             # This mutant valid?
-            tv = TicketValidator()
-            tv.check_all_prizes_winnable(self)
-            tv.check_ticket(self)
+            validator = TicketValidator()
+            validator.check_all_prizes_winnable(self)
+            validator.check_ticket(self)
         except:
             # undo
             for key in keys:
@@ -155,7 +164,7 @@ class Ticket(object):
         Allow this to be in dictionary for histogram calculations
         :return:
         """
-        return hash("".join(list(map(str,[self.spots, self.games, self.bet, self.bonus, self.super_bonus]))))
+        return hash("".join(list(map(str, [self.spots, self.games, self.bet, self.bonus, self.super_bonus]))))
 
 
 class TicketValidator(object):
@@ -195,11 +204,9 @@ class TicketValidator(object):
             raise TypeError("Can't do bonus and super bonus at same time.")
 
         # max ticket rules
-        """
-        $100 is the maximum Keno wager per playslip.
-        $200 is the maximum Keno wager per playslip when the Bonus option is selected.
-        $300 is the maximum Keno wager per playslip when the Super Bonus option is selected.
-        """
+        # $100 is the maximum Keno wager per playslip.
+        # $200 is the maximum Keno wager per playslip when the Bonus option is selected.
+        # $300 is the maximum Keno wager per playslip when the Super Bonus option is selected.
         if ticket.bet * ticket.games > 100:
             raise TypeError("Too much for this slip! ${0}".format(ticket.bet * ticket.games))
         if ticket.bonus and ticket.bet * 2 * ticket.games > 200:

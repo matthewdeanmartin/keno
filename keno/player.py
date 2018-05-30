@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-
+Represents a player with a particular strategy.
 """
 from keno.game import Keno
 from keno.ticket import Ticket, TicketValidator
@@ -60,14 +60,15 @@ class Player(object):
             i += 1
             self.tickets_played += 1
             md_keno = Keno()
-            tv = TicketValidator()
-            tv.check_all_prizes_winnable(self.ticket)
-            tv.check_ticket(self.ticket)
+            validator = TicketValidator()
+            validator.check_all_prizes_winnable(self.ticket)
+            validator.check_ticket(self.ticket)
             self.expenses += self.ticket.price()
             won = md_keno.calculate_payoff_n_drawings(self.ticket)
-            if won > 0:
-                if False:
-                    print("Won {0} on game {1}".format(won, i))
+            # verbose debug
+            # if won > 0:
+            #     if False:
+            #         print("Won {0} on game {1}".format(won, i))
             self.winnings += won
 
             if i > 500:
