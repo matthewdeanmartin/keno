@@ -1,6 +1,8 @@
 CHANGES
 =======
 
+* prospector and pip/safety checks
+* add goo to start game
 * coverage
 * linting
 * build script work

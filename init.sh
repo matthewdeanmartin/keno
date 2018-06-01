@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
-go()
+create_it()
 {
     export PATH="$HOME/miniconda3/bin:$PATH"
     conda create --name keno_conda_env
+    . activate keno_conda_env
+    conda env list
+}
+activate_it()
+{
+    export PATH="$HOME/miniconda3/bin:$PATH"
+    # conda create --name keno_conda_env
     . activate keno_conda_env
     conda env list
 }
@@ -19,5 +26,3 @@ conda_installs()
 {
     conda install numpy cython
 }
-
-go

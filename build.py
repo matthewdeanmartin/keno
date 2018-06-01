@@ -11,12 +11,117 @@ mini-first-impressions review:
 - no easy way to redirect output of script to file
 - no way to use this to set up venvs, nor to do deployment (needs venv to run this!)
 """
+# import os
+# os.environ["PYTHONPATH"] = "."
+#
+# from pynt_extras import *
+
 from pynt import task
-from pyntcontrib import execute, safe_cd
+from pyntcontrib import *
+
 
 PROJECT_NAME = "keno"
 
+from semantic_version import Version
+import bumpversion
+
+
+# coding=utf-8
+"""
+Pynt was missing some things I desperately wanted.
+"""
+import os
+
+from checksumdir import dirhash
+
+CURRENT_HASH = None
+
+# bash to find what has change recently
+# find src/ -type f -print0 | xargs -0 stat -f "%m %N" | sort -rn | head -10 | cut -f2- -d" "
+class BuildState(object):
+    def __init__(self, what, where):
+        self.what = what
+        self.where = where
+        if not os.path.exists(".build_state"):
+            os.makedirs(".build_state")
+        self.state_file_name = ".build_state/last_change_{0}.txt".format(what)
+
+    def oh_never_mind(self):
+        """
+        If a task fails, we don't care if it didn't change since last, re-run,
+        :return:
+        """
+        os.remove(self.state_file_name)
+
+    def has_source_code_tree_changed(self):
+        """
+        If a task succeeds & is re-run and didn't change, we might not
+        want to re-run it if it depends *only* on source code
+        :return:
+        """
+        global CURRENT_HASH
+        directory = self.where
+
+        if CURRENT_HASH is None:
+            CURRENT_HASH = dirhash(directory, 'md5', excluded_files="*.pyc")
+
+        if os.path.isfile(self.state_file_name):
+            with open(self.state_file_name, "r+") as file:
+                last_hash = file.read()
+                if last_hash != CURRENT_HASH:
+                    file.seek(0)
+                    file.write(CURRENT_HASH)
+                    file.truncate()
+                    return True
+        else:
+            with open(self.state_file_name, "w") as file:
+                file.write(CURRENT_HASH)
+                return True
+        return False
+
+def oh_never_mind(what):
+    state = BuildState(what, "keno")
+    state.oh_never_mind()
+
+def has_source_code_tree_changed(what):
+    state = BuildState(what, "keno")
+    return state.has_source_code_tree_changed()
+
+import functools
+
+
+def skip_if_no_change(name):
+    # https://stackoverflow.com/questions/5929107/decorators-with-parameters
+    def real_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            if not has_source_code_tree_changed(name):
+                print("Nothing changed, won't re-" + name)
+                return
+            try:
+                return func(*args, **kwargs)
+            except:
+                oh_never_mind(name)
+                raise
+        return wrapper
+    return real_decorator
+
+def execute_with_environment(command, env):
+    nose_process = os.subprocess.Popen(command.split(" "), env=env)
+    nose_process.communicate()  # wait
+
 @task()
+#@skip_if_no_change("bumpversion")
+def bumpversion():
+    x = execute("python", "-c", "import keno;print(keno.__version__)")
+    print(x)
+    current_version = Version(x)
+    # new_version = Version("{0}{1}{2}".format(current_version.major, current_version.minor, current_version.build +1))
+    execute("bumpversion", "--current-version", str(current_version), "build")
+
+
+@task()
+@skip_if_no_change("clean")
 def clean():
     for folder in ["build", "dist", "keno.egg-info"]:
         execute("rm", "-rf", folder)
@@ -27,10 +132,12 @@ def clean():
         pass
 
 @task(clean)
+@skip_if_no_change("compile")
 def compile():
     execute("python", "-m", "compileall", PROJECT_NAME)
 
 @task(compile)
+@skip_if_no_change("lint")
 def lint():
     # sort of redundant to above...
     #
@@ -46,25 +153,32 @@ def lint():
         raise TypeError("Too many lines of lint : {0}".format(num_lines))
 
 @task(lint)
+@skip_if_no_change("nose_tests")
 def nose_tests():
+    # if these were integration tests with say, API calls, we might not want to skip
     execute("python", "-m", "nose", PROJECT_NAME)
 
 @task(nose_tests)
+@skip_if_no_change("coverage")
 def coverage():
+    # if these were integration tests with say, API calls, we might not want to skip
     execute("py.test", *("keno --cov=keno --cov-report html:coverage --verbose".split(" ")))
 
 @task(nose_tests)
+@skip_if_no_change("docs")
 def docs():
     with safe_cd("docs"):
         execute("make", "html")
 
 @task()
+@skip_if_no_change("pip_check")
 def pip_check():
     execute("pip", "check")
     execute("safety", "check")
     execute("safety", "check", "-r", "requirements_dev.txt")
 
 @task(docs, nose_tests, pip_check, compile, lint)
+@skip_if_no_change("package")
 def package():
     execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
     execute("python", "setup.py", "sdist", "--formats=gztar,zip")
@@ -81,3 +195,5 @@ def echo(*args, **kwargs):
 # __DEFAULT__ is an optional member
 
 __DEFAULT__ = echo
+
+
