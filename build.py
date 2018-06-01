@@ -110,14 +110,40 @@ def execute_with_environment(command, env):
     nose_process = os.subprocess.Popen(command.split(" "), env=env)
     nose_process.communicate()  # wait
 
+import subprocess
+
+
+def execute_get_text(command):
+    try:
+        completed = subprocess.run(
+            command,
+            check=True,
+            shell=True,
+            stdout=subprocess.PIPE,
+        )
+    except subprocess.CalledProcessError as err:
+        raise
+    else:
+        # print('returncode:', completed.returncode)
+        # print('Have {} bytes in stdout: {!r}'.format(
+        #     len(completed.stdout),
+        #     completed.stdout.decode('utf-8'))
+        # )
+        return completed.stdout.decode('utf-8')
+
 @task()
 #@skip_if_no_change("bumpversion")
 def bumpversion():
-    x = execute("python", "-c", "import keno;print(keno.__version__)")
+    """
+    Fails if git isn't committed.
+    :return:
+    """
+    x = execute_get_text(" ".join(["python", "-c", '"import keno;print(keno.__version__)"']))
     print(x)
     current_version = Version(x)
     # new_version = Version("{0}{1}{2}".format(current_version.major, current_version.minor, current_version.build +1))
-    execute("bumpversion", "--current-version", str(current_version), "build")
+    # bumpversion --new-version 2.0.2 build --no-tag  --no-commit
+    execute("bumpversion", "--current-version", str(current_version), "build", "--tag", "--no-commit")
 
 
 @task()
