@@ -9,10 +9,10 @@ def run():
     :return:
     """
     runner = GameRunner(max_ticket_price=50,
-                        max_ticket_types=5000,
-                        max_plays_with_ticket_type=90,
-                        max_loss=250,
+                        max_ticket_types=1050,
+                        max_plays_with_ticket_type=365,
+                        max_loss=2500,
                         sufficient_winnings=2500,
-                        max_generations=10)
+                        max_generations=8)
     runner.run()
 run()

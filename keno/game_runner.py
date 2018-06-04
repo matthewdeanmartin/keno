@@ -10,7 +10,7 @@ from keno.game import Keno
 from keno.player import Player
 from keno.ticket import Ticket
 
-
+KENO = Keno()
 class GameRunner(object):
     """
     Represents top level config for similation
@@ -44,7 +44,8 @@ class GameRunner(object):
         self.winners = None
 
         # TODO: Maybe implement Keno of other states.
-        self.md_keno = Keno()
+        global  KENO
+        self.keno = KENO
 
     def generate_tickets(self):
         """
@@ -65,6 +66,10 @@ class GameRunner(object):
                 continue
 
             self.tickets.append(ticket)
+
+        while len(self.tickets)<self.max_ticket_types:
+            print("Not enough tickets with unique individuals, puffing up with dupes")
+            self.tickets.extend(self.tickets)
 
         print("Have {0} tickets. Now ready to play".format(len(self.tickets)))
         sys.stdout.flush()
@@ -95,7 +100,7 @@ class GameRunner(object):
             for ticket in current_tickets:
                 i += 1
                 jackpot = 2500
-                if not self.md_keno.can_i_win_this_much(ticket, jackpot):
+                if not self.keno.can_i_win_this_much(ticket, jackpot):
                     # loser ticket.
                     continue
                 if ticket.price() > self.max_ticket_price:
@@ -110,7 +115,10 @@ class GameRunner(object):
                 if player.good_game():
                     self.winners[generation + 1].append(ticket)
                     if i < 6:
-                        print("------Good Game------" + str(ticket.price() * player.tickets_played))
+                        print("------Good Game------ paid-{0}, won(net) {1}".format(
+                            str(ticket.price() * player.tickets_played),
+                            player.net_winnings))
+                        print(player.history)
                     else:
                         print('.', end='')
 
@@ -128,6 +136,10 @@ class GameRunner(object):
 
             print("Crossing Tickets")
             upcoming_generation = self.winners[generation + 1]
+
+            while len(self.winners[generation + 1]) < self.max_ticket_types:
+                print("Puffing up population of tickets")
+                self.winners[generation + 1].extend(self.winners[generation + 1])
 
             if len(upcoming_generation) >= 3:
                 for index in range(0, len(upcoming_generation) - 1, 2):
@@ -154,6 +166,10 @@ class GameRunner(object):
         self.print_results()
 
     def print_results(self):
+        """
+        Show best tickets. Ignore worst
+        :return:
+        """
         histo = {}
         for winner in self.winners[max(self.winners.keys())]:
             if winner in histo.keys():
@@ -164,11 +180,15 @@ class GameRunner(object):
         d_descending = OrderedDict(sorted(histo.items(),
                                           key=lambda x: x[1], reverse=False))
 
+        i = 0
         for winner, occurance in d_descending.items():
+            i += 1
+            if i< len(d_descending)-5:
+                continue
             print("------{0}------".format(occurance))
             print(winner)
             print("Ticket Price: {0}".format(winner.price()))
-            print("Payoff range " + str(self.md_keno.possible_pay_off_for_ticket_per_game(winner)))
+            print("Payoff range " + str(self.keno.possible_pay_off_for_ticket_per_game(winner)))
             print("-----")
 
 

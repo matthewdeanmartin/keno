@@ -4,53 +4,15 @@
 The Keno game, independent of player.
 
 """
-try:
-    import numpy as np
-    HAVE_NUMPY = True
-except:
-    print("We don't have numpy, simulation will be slower, but startup time might be a bit faster")
-    HAVE_NUMPY = False
-
 import random
+from collections import OrderedDict
 
-EIGHTY_NUMBERS = list(range(1, 80))
+from keno.number_machine import NumbersMachine
 
-class NumbersMachine(object):
-    """
-    Abstract number drawing machine.
-    """
-    def __init__(self, spots):
-        """
-        This maybe could be a Callable or a def.
-        :type spots: int
-        """
-        if spots == 0 or spots > 21:
-            raise TypeError("What game is this? {0}".format(spots))
-        self.spots = spots
-
-
-    def draw(self):
-        """
-        user picks 1 - 10, but lotto draws 20!
-        :return:
-        """
-        global EIGHTY_NUMBERS
-
-        # sample might be faster?
-        if not HAVE_NUMPY:
-            # slower
-            random.shuffle(EIGHTY_NUMBERS)
-        else:
-            # faster
-            np.random.shuffle(EIGHTY_NUMBERS)
-
-        drawing = EIGHTY_NUMBERS[0:self.spots]
-        list.sort(drawing)
-        return drawing
 
 class Keno(object):
     """
-    Maryland Keno
+    Maryland/DC Keno
     """
 
     @property
@@ -62,15 +24,81 @@ class Keno(object):
         return self._ticket_ranges.copy()
 
     def __init__(self):
+        # When cached, this turns into a singleton!
+        self.machine = NumbersMachine(20)
+
         self._ticket_ranges = {
             "spots": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "games": [1, 2, 3, 4, 5, 10, 20],
-            "bet": [1, 2, 3, 45, 10, 20],
+            "bet": [1, 2, 3, 4, 5, 10, 20],
             "bonus": [True, False],
             "super_bonus": [True, False],
+            "state": ["MD", "DC"]
             # "constant_numbers": [True, False] # can't really do this!!
         }
-        self.pay_off_chart = {
+        self.dc_pay_off_chart = {
+            10: {
+                10: 100000,
+                9: 5000,
+                8: 500,
+                7: 46,
+                6: 10,
+                5: 2,
+                0: 5
+            },
+            9: {
+                9: 20000,
+                8: 2000,
+                7: 100,
+                6: 15,
+                5: 5,
+                4: 1,
+                0: 2
+            },
+            8: {
+                8: 10000,
+                7: 500,
+                6: 50,
+                5: 7,
+                4: 1,
+                0: 2
+            },
+            7: {
+                7: 1500,
+                6: 150,
+                5: 20,
+                4: 2,
+                0: 1
+            },
+            6: {
+                6: 1500,
+                5: 53,
+                4: 5,
+                3: 1
+            },
+            5: {
+                5: 400,
+                4: 10,
+                3: 3
+            },
+            4: {
+                4: 65,
+                3: 5,
+                2: 1
+            },
+            3: {
+                3: 23,
+                2: 2
+            },
+            2: {
+                2: 10
+            },
+            1: {
+                1: 2.50
+            }
+
+        }
+        self.md_pay_off_chart = {
             # lose 40% in 1 million plays
             10: {
                 10:100000,
@@ -131,6 +159,16 @@ class Keno(object):
             }
         }
 
+    def pay_off_chart(self, state):
+        if state == "MD":
+            return self.md_pay_off_chart
+
+        if state == "DC":
+            return self.dc_pay_off_chart
+
+        raise TypeError("Don't know that state")
+
+
     def can_i_win_this_much(self, ticket, jackpot):
         """
 
@@ -153,7 +191,7 @@ class Keno(object):
         :type ticket: Ticket
         :return:
         """
-        chart = self.pay_off_chart[ticket.spots].copy()
+        chart = self.pay_off_chart(ticket.state)[ticket.spots].copy()
 
         for key, value in chart.items():
             chart[key] = value * ticket.bet
@@ -181,8 +219,7 @@ class Keno(object):
         The numbers drawn by state, the winning numbers
         :type:
         """
-        machine = NumbersMachine(20)
-        return machine.draw()
+        return self.machine.draw()
 
     def check_single_winning(self, picks, state_drawing):
         """
@@ -198,34 +235,60 @@ class Keno(object):
                 matches.add(pick)
         return matches
 
-    def check_for_bonus(self):
+    def check_for_bonus(self, state):
         """
         Rule confusing...I think this is determined as a function of drawying and/or user selections
         :rtype: int
         """
-        odds = {
+        md_odds = {
 
             3: 3,
             4: 15,
             5: 40,
             10: 250
         }
-        for key, value in odds.items():
-            if random.randint(0, value * 10) < 10:
-                return key
-        # guaranteed some sort of mutliplier
-        return 1
+        dc_odds = {
+            1: 0.4008703648066716,
+            2: 0.4246870419432078,
+            3: 0.06193246478937354,
+            4: 0.06255701526780105,
+            5: 0.0375841003650798,
+            10: 0.012367191980990358
+        }
+
+        if state == "DC":
+            cummulative_prob = OrderedDict([(1, 0.4008703648066716),
+                                            (2, 0.8255574067498794),
+                                            (3, 0.887489871539253),
+                                            (4, 0.950046886807054),
+                                            (5, 0.9876309871721337),
+                                            (10, 0.9999981791531241)])
+            spin = random.uniform(0, 1)
+            for key, value in cummulative_prob.items():
+                if key < value:
+                    return key
+            return 1
+
+        if state == "MD":
+            for key, value in md_odds.items():
+                if random.randint(0, value * 10) < 10:
+                    return key
+            # guaranteed some sort of mutliplier
+            return 1
+        raise TypeError("Don't know this state")
         # wrong
         # for i in [10, 5, 4, 3]:
         #     if i in ten_numbers:
         #         return i
         # return 1
 
-    def check_for_super_bonus(self):
+    def check_for_super_bonus(self, state):
         """
         Rule confusing...I think this is determined as a function of drawying and/or user selections
         :rtype: int
         """
+        if state == "DC":
+            return 1
         odds = {
             2:2.4,
             3:7.1,
@@ -265,18 +328,23 @@ class Keno(object):
         :type ticket: Ticket
         :rtype: int
         """
+        # print(state_drawing, ticket.numbers)
+        if len(ticket.numbers) == 0:
+            raise TypeError("uninitialized ticket numbers")
+        if len(ticket.numbers) != ticket.spots:
+            raise TypeError("wrongly initialized ticket numbers - expected len(n) to match spots")
         matches = self.check_single_winning(ticket.numbers, state_drawing)
         try:
-            winnings = self.pay_off_chart[ticket.spots][len(matches)]
+            winnings = self.pay_off_chart(ticket.state)[ticket.spots][len(matches)]
         except KeyError:
             return 0
 
         if ticket.bonus:
-            factor = self.check_for_bonus()
+            factor = self.check_for_bonus(ticket.state)
             return winnings * ticket.bet * factor
 
         if ticket.super_bonus:
-            factor = self.check_for_super_bonus()
+            factor = self.check_for_super_bonus(ticket.state)
             return winnings * ticket.bet * factor
 
         return winnings * ticket.bet

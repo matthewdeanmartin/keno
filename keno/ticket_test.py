@@ -11,6 +11,7 @@ def test_ticket():
     Basic call
     """
     ticket = Ticket()
+    ticket.randomize_ticket()
     assert ticket.price() > 0
 
 def test_ticket_str():
@@ -26,6 +27,7 @@ def test_ticket_validator_is_good_ticket():
     Basic call
     """
     ticket = Ticket()
+    ticket.randomize_ticket()
     validator = TicketValidator()
     assert validator.is_good_ticket(ticket)
 
@@ -56,6 +58,7 @@ def test_ticket_validator_basically_ok():
     Basic call
     """
     ticket = Ticket()
+    ticket.randomize_ticket()
     validator = TicketValidator()
     validator.check_ticket(ticket)
     assert True, "that function throws or doesn't no return"

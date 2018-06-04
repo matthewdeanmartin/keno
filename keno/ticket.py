@@ -7,9 +7,10 @@ Some choices are "sucker's bets" and should not be played.
 import copy
 import random
 
-from keno.game import Keno, NumbersMachine
+from keno.game import Keno
+from keno.number_machine import NumbersMachine, StaticNumbersMachine
 
-
+KENO = Keno()
 class Ticket(object):
     """
     Represents all the choices you make on a real ticket.
@@ -17,24 +18,40 @@ class Ticket(object):
     Assumes that the exact numbers are not a real choice, that one set of numbers is as good as the next.
     """
     def __init__(self):
-        self.spots = 1
-        self.games = 1
-        self.bet = 2
-        self.bonus = False
-        self.super_bonus = False
-        self.numbers = []
-        self.rules = Keno()
+        self.spots = -1
+        self.games = -1
+        self.bet = -1
+        self.bonus = None
+        self.super_bonus = None
+        self._numbers = []
+        self.state = None
+
+        global KENO
+        self.rules = KENO
         # actually... you can't buy multiple tickets against same game... hafta buy multiples
         # within same 3 mintues!!
         # self.constant_numbers = False
+
+    @property
+    def numbers(self):
+        """
+        Make sure this doesn't accidentally get mutated.
+        :type: dict[str,list[int|bool]]
+        """
+        if len(self._numbers) == 0:
+            self.pick()
+        return self._numbers
 
     def pick(self):
         """
         Generate random numbers, but other strategic decisions.
         :return:
         """
-        machine = NumbersMachine(self.spots)
-        self.numbers = machine.draw()
+        if self.spots<1 or self.spots>20:
+            raise TypeError("Invalid spot range")
+        machine = StaticNumbersMachine(self.spots)
+        self._numbers = machine.draw()
+        assert len(self.numbers) == self.spots
 
     def price(self):
         """
@@ -62,14 +79,18 @@ class Ticket(object):
             for key, value in self.rules.ticket_ranges.items():
                 setattr(self, key, self.rules.ticket_ranges[key][random.randint(0, len(value)-1)])
 
-            if self.bonus and self.super_bonus:
+
+            if self.bonus and self.super_bonus and self.state == "MD":
                 if random.randint(0, 1) == 1:
                     self.bonus = True
                     self.super_bonus = False
                 else:
                     self.bonus = False
                     self.super_bonus = True
-            if i > 100:
+            if self.state == "DC":
+                self.super_bonus = False
+
+            if i > 200:
                 raise TypeError("Can't generate a good ticket!")
 
     def __str__(self):
@@ -157,14 +178,15 @@ class Ticket(object):
                 self.games == other.games and \
                 self.bet == other.bet and \
                 self.bonus == other.bonus and \
-                self.super_bonus == other.super_bonus
+                self.super_bonus == other.super_bonus and \
+                self.state == other.state
 
     def __hash__(self):
         """
         Allow this to be in dictionary for histogram calculations
         :return:
         """
-        return hash("".join(list(map(str, [self.spots, self.games, self.bet, self.bonus, self.super_bonus]))))
+        return hash("".join(list(map(str, [self.spots, self.games, self.bet, self.bonus, self.super_bonus, self.state]))))
 
 
 class TicketValidator(object):
@@ -194,6 +216,10 @@ class TicketValidator(object):
         :type ticket: Ticket
         :rtype: None
         """
+        if len(ticket.numbers) == 0:
+            raise TypeError("numbers not initialized")
+        if len(ticket.numbers) != ticket.spots:
+            raise TypeError("numbers wrongly initialized")
 
         for key, value in self.md_keno.ticket_ranges.items():
             if getattr(ticket, key) not in self.md_keno.ticket_ranges[key]:
@@ -221,7 +247,7 @@ class TicketValidator(object):
         :rtype: None
         """
         # don't bet if max prize is unwinnable (
-        if ticket.bonus and self.md_keno.pay_off_chart[ticket.spots][ticket.spots] * ticket.bet * 10 > 100000:
+        if ticket.bonus and self.md_keno.pay_off_chart(ticket.state)[ticket.spots][ticket.spots] * ticket.bet * 10 > 100000:
             raise TypeError("Why? Max payout is 100K")
-        if ticket.bonus and self.md_keno.pay_off_chart[ticket.spots][ticket.spots] * ticket.bet * 20 > 100000:
+        if ticket.bonus and self.md_keno.pay_off_chart(ticket.state)[ticket.spots][ticket.spots] * ticket.bet * 20 > 100000:
             raise TypeError("Why? Max payout is 100K")

@@ -21,8 +21,8 @@ class Player(object):
         :type stop_at: int
         :type max_tickets:int
         """
-        self.ticket = Ticket()
-        self.ticket.randomize_ticket()
+        self.ticket = None
+        #self.ticket.randomize_ticket()
         self.max_loss = max_loss
         self.stop_at = stop_at
         self.winnings = 0
@@ -30,6 +30,9 @@ class Player(object):
         self.net_winnings = 0
         self.tickets_played = 0
         self.max_tickets_bought = max_tickets
+        self.history = []
+        self.history_running_bank = []
+        self.md_keno = Keno()
 
     def good_game(self):
         """
@@ -43,33 +46,43 @@ class Player(object):
         Stop when won enough, lost too much, or game taking too long.
         :return:
         """
-        self.net_winnings = self.winnings - self.expenses
-        if self.net_winnings < 0 and self.max_loss > abs(self.net_winnings):
+
+        if self.net_winnings < 0 and abs(self.net_winnings) > self.max_loss:
             # print("lost enough")
+            self.history.append("lost more than max_loss")
             return True
         if self.net_winnings > self.stop_at:
             # print("won enough")
+            self.history.append("won goal")
             return True
         if self.tickets_played > self.max_tickets_bought:
+            self.history.append("played enough tickets")
             return True
         return False
 
     def go(self):
+        if self.ticket is None:
+            raise TypeError("ticket not set")
         i = 0
         while not self.can_stop_any_time_i_want_to():
             i += 1
             self.tickets_played += 1
-            md_keno = Keno()
+
+
             validator = TicketValidator()
             validator.check_all_prizes_winnable(self.ticket)
             validator.check_ticket(self.ticket)
+
             self.expenses += self.ticket.price()
-            won = md_keno.calculate_payoff_n_drawings(self.ticket)
-            # verbose debug
-            # if won > 0:
-            #     if False:
-            #         print("Won {0} on game {1}".format(won, i))
+
+            won = self.md_keno.calculate_payoff_n_drawings(self.ticket)
+            self.history.append(won)
+
             self.winnings += won
+
+            # TODO: derived column, gets out of sync?
+            self.net_winnings = self.winnings - self.expenses
+            self.history_running_bank.append(self.net_winnings)
 
             if i > 500:
                 # This shouldn't happen.
