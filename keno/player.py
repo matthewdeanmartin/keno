@@ -14,32 +14,37 @@ class Player(object):
     is useless if it takes 1 million years. Or more than a few weeks tbh.
     """
 
-    def __init__(self, max_loss, stop_at, max_tickets):
+    def __init__(self, strategy):
         """
 
-        :type max_loss: int
-        :type stop_at: int
-        :type max_tickets:int
+        :type strategy: Strategy
         """
         self.ticket = None
         #self.ticket.randomize_ticket()
-        self.max_loss = max_loss
-        self.stop_at = stop_at
+        self.max_loss = strategy.max_loss
+        self.stop_at = strategy.sufficient_winnings
         self.winnings = 0
         self.expenses = 0
         self.net_winnings = 0
         self.tickets_played = 0
-        self.max_tickets_bought = max_tickets
+        self.max_tickets_bought = strategy.max_plays_with_ticket_type
         self.history = []
         self.history_running_bank = []
         self.md_keno = Keno()
 
     def good_game(self):
         """
-        If a game took too long or lost too much, it ended poorly.
+        Did we hit the goal. Period.
         :return:
         """
         return self.net_winnings >= self.stop_at
+
+    def evolutionary_fitness(self):
+        """
+        Did we over-fulfill the goal, how bad were our losses
+        :return:
+        """
+        return self.net_winnings
 
     def can_stop_any_time_i_want_to(self):
         """

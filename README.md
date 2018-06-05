@@ -13,6 +13,8 @@ But you say "Wait, all numbers are equally likely to win." Yes, but the pay off 
 
 In stats books, the chapter on "Gamblers Ruin" will tell you the optimal way to gamble is to make 1 large bet and stop. That is way to maximize the odds that you end up ahead. Making many small bets maximizes the chance that you hit gambler's ruin and run out of money. So we'd expect this simulator to choose the ticket that is the least awful odds and bumping up against the maximum ticket price.
 
+[Article on Gamblers Ruin](http://people.math.umass.edu/~lr7q/ps_files/teaching/math456/Chapter4.pdf) - Skip to conclusion- to minimize the odds of Gamblers ruin and maximize odds of reaching a goal, "be bold"
+
 Genetic Algorithm
 -----------------
 Right now it takes n randomly generated tickets, give them to a player and simulate playing until a constraint is hit (max loss, won enough or max number of plays). 
@@ -25,6 +27,7 @@ I tried a mutator, randomly changing a ticket feature, but that usually created 
 
 Finally, the gentically optimal ticket is the most common ticket by the end of the simulation.
 
+If it is working, we'd expect it to at "be bold", i.e. bet the maximum amount, on tickets that have the best expected value, which could vary slightly from ticket type to ticket type.
 
 Programming Gotchas
 -------------------

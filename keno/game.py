@@ -158,6 +158,65 @@ class Keno(object):
                 1: 2
             }
         }
+        self.wv_pay_off_chart ={
+            10:{
+                10: 100000,
+                9: 4000,
+                8: 400,
+                7: 50,
+                6: 10,
+                5: 2,
+                0: 4
+            },
+            9: {
+                9: 25000,
+                8: 2500,
+                7: 200,
+                6: 25,
+                5: 4,
+                0: 2
+            },
+            8: {
+                8: 10000,
+                7: 500,
+                6: 50,
+                5: 10,
+                4: 2
+            },
+            7: {
+                7: 2500,
+                6: 125,
+                5: 15,
+                4: 2,
+                3: 1
+            },
+            6: {
+                6: 1500,
+                5: 50,
+                4: 5,
+                3: 1
+            },
+            5: {
+                5: 400,
+                4: 15,
+                3: 2
+            },
+            4: {
+                4: 50,
+                3: 5,
+                2: 1
+            },
+            3: {
+                3: 25,
+                2: 2
+            },
+            2: {
+                2: 10
+            },
+            1: {
+                1: 2
+            }
+        }
 
     def pay_off_chart(self, state):
         if state == "MD":
@@ -165,6 +224,9 @@ class Keno(object):
 
         if state == "DC":
             return self.dc_pay_off_chart
+
+        if state == "WV":
+            return self.wv_pay_off_chart
 
         raise TypeError("Don't know that state")
 

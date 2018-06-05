@@ -123,21 +123,27 @@ def generate_lots_of_numbers():
 GENERATOR = generate_lots_of_numbers()
 
 if __name__ == "__main__":
-    if False:
+    def run():
+        """
+        Exercise cod
+        :return:
+        """
         i = 1
         while i < 5:
             i += 1
-            z = next(generate_lots_of_numbers())
-            print(z)
+            result = next(generate_lots_of_numbers())
+            print(result)
         exit()
-    import timeit
-    x= timeit.timeit("""import keno.number_machine as k
-i = 1
-while i <100000: 
-    i += 1
-    next(k.generate_lots_of_numbers())""", number=1)
-    print(x)
-    #x = generate_lots_of_numbers()
-    #print(next(x))
-    # generate_lots_of_numbers()
+    def timings():
+        """
+        Exercise cod
+        :return:
+        """
+        import timeit
+        result = timeit.timeit("""import keno.number_machine as k
+    i = 1
+    while i <100000: 
+        i += 1
+        next(k.generate_lots_of_numbers())""", number=1)
+        print(result)
 

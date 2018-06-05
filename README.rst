@@ -28,6 +28,11 @@ chance that you hit gambler’s ruin and run out of money. So we’d expect
 this simulator to choose the ticket that is the least awful odds and
 bumping up against the maximum ticket price.
 
+`Article on Gamblers
+Ruin <http://people.math.umass.edu/~lr7q/ps_files/teaching/math456/Chapter4.pdf>`__
+- Skip to conclusion- to minimize the odds of Gamblers ruin and maximize
+odds of reaching a goal, “be bold”
+
 Genetic Algorithm
 -----------------
 
@@ -50,6 +55,10 @@ were too deadly and caused optimal tickets to all become junk.
 
 Finally, the gentically optimal ticket is the most common ticket by the
 end of the simulation.
+
+If it is working, we’d expect it to at “be bold”, i.e. bet the maximum
+amount, on tickets that have the best expected value, which could vary
+slightly from ticket type to ticket type.
 
 Programming Gotchas
 -------------------

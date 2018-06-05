@@ -4,7 +4,6 @@ All choice that a player makes when buying a ticket.
 
 Some choices are "sucker's bets" and should not be played.
 """
-import copy
 import random
 
 from keno.game import Keno
@@ -31,6 +30,21 @@ class Ticket(object):
         # actually... you can't buy multiple tickets against same game... hafta buy multiples
         # within same 3 mintues!!
         # self.constant_numbers = False
+
+    def copy(self):
+        """
+        Faster than copy/deepcopy
+        :return:
+        """
+        t = Ticket()
+        t.spots = self.spots
+        t.games = self.games
+        t.bet = self.bet
+        t.bonus = self.bonus
+        t.super_bonus = self.super_bonus
+        t._numbers = self._numbers
+        t.state = self.state
+        return t
 
     @property
     def numbers(self):
@@ -106,6 +120,21 @@ class Ticket(object):
             result += "\n"
         return result
 
+    def make_save_point(self):
+        """
+        Faster than copy/deepcopy
+        :return:
+        """
+        return {
+            "spots" :self.spots,
+            "games":self.games,
+            "bet":self.bet,
+            "bonus":self.bonus,
+            "super_bonus":self.super_bonus,
+            #"_numbers":self.numbers
+            "state":self.state
+        }
+
     def geneticly_merge_ticket(self, ticket, max_price):
         """
         Make this ticket 1/2 like the other ticket
@@ -116,8 +145,7 @@ class Ticket(object):
         if self == ticket:
             # crossing with a clone.
             return
-        save_point = copy.deepcopy(self)
-
+        save_point = self.make_save_point()
         keys = [x for x in self.rules.ticket_ranges.keys()]
         random.shuffle(keys)
         for key in keys:
@@ -134,7 +162,8 @@ class Ticket(object):
         except:
             # undo
             for key in keys:
-                setattr(self, key, getattr(save_point, key))
+                #setattr(self, key, getattr(save_point, key))
+                setattr(self, key, save_point[key])
 
     def mutate_ticket(self, percent):
         """
@@ -142,7 +171,8 @@ class Ticket(object):
         :type percent:float
         :return:
         """
-        save_point = copy.deepcopy(self)
+        # save_point = copy.deepcopy(self)
+        save_point = self.make_save_point()
 
         mutation_ticket = Ticket()
         mutation_ticket.randomize_ticket()
@@ -164,8 +194,7 @@ class Ticket(object):
         except:
             # undo
             for key in keys:
-                setattr(self, key, getattr(save_point, key))
-
+                setattr(self, key, save_point[key])
 
     def __eq__(self, other):
         """
@@ -186,7 +215,10 @@ class Ticket(object):
         Allow this to be in dictionary for histogram calculations
         :return:
         """
-        return hash("".join(list(map(str, [self.spots, self.games, self.bet, self.bonus, self.super_bonus, self.state]))))
+        return hash(":".join(list(map(str, [self.spots, self.games,
+                                           self.bet,
+                                           self.bonus, self.super_bonus,
+                                           self.state]))))
 
 
 class TicketValidator(object):
@@ -216,14 +248,16 @@ class TicketValidator(object):
         :type ticket: Ticket
         :rtype: None
         """
-        if len(ticket.numbers) == 0:
+        if not ticket.numbers:
             raise TypeError("numbers not initialized")
         if len(ticket.numbers) != ticket.spots:
             raise TypeError("numbers wrongly initialized")
 
         for key, value in self.md_keno.ticket_ranges.items():
             if getattr(ticket, key) not in self.md_keno.ticket_ranges[key]:
-                raise TypeError("Bad ticket {0} can be {1}, but got".format(key, value, getattr(ticket, key)))
+                raise TypeError("Bad ticket {0} can be {1}, but got {2}".format(key,
+                                                                            value,
+                                                                            getattr(ticket, key)))
 
         # bonus rules
         if ticket.bonus and ticket.super_bonus:
@@ -246,8 +280,11 @@ class TicketValidator(object):
         :type ticket: Ticket
         :rtype: None
         """
+        # TODO: DC & MD have different max ticket/max drawing limits
+        pass
         # don't bet if max prize is unwinnable (
-        if ticket.bonus and self.md_keno.pay_off_chart(ticket.state)[ticket.spots][ticket.spots] * ticket.bet * 10 > 100000:
-            raise TypeError("Why? Max payout is 100K")
-        if ticket.bonus and self.md_keno.pay_off_chart(ticket.state)[ticket.spots][ticket.spots] * ticket.bet * 20 > 100000:
-            raise TypeError("Why? Max payout is 100K")
+        # pay_off = self.md_keno.pay_off_chart(ticket.state)[ticket.spots][ticket.spots] * ticket.bet
+        # if ticket.bonus and pay_off * 10 > 1000000:
+        #     raise TypeError("Why? Max payout is 100K")
+        # if ticket.bonus and pay_off * 20 > 1000000:
+        #     raise TypeError("Why? Max payout is 100K")
