@@ -28,4 +28,4 @@ def test_player_str():
     """
     player = Player(100, 100, 100)
 
-    assert "" != str(player)
+    assert str(player) != ""

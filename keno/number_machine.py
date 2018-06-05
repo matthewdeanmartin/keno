@@ -2,7 +2,7 @@
 """
 Draw numbers...fast.
 """
-import ast
+# import ast
 import os
 
 try:
@@ -107,7 +107,7 @@ def generate_lots_of_numbers():
     if not os.path.isfile(file_name):
         print("Generating lots of numbers to file")
         with open(file_name, "w+") as file:
-            for i in range(0,100000000):# 1_000_000):
+            for i in range(0, 100000000):  # 1_000_000):
                 file.write(str(pick_twenty())+"\n")
     # else:
     #     with open(file_name, "r") as f:
@@ -120,7 +120,7 @@ def generate_lots_of_numbers():
             #yield [x for x in map(int,row.replace("[","").replace("]","").split(","))] # 6.86, 6.42, 6.11, 6.29
             yield[x for x in map(int, row[1:len(row)-2].split(","))] # 6.2, 6.05, 6.23, 6.38, 5.74
 
-GENERATOR  = generate_lots_of_numbers()
+GENERATOR = generate_lots_of_numbers()
 
 if __name__ == "__main__":
     if False:

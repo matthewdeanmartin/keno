@@ -3,7 +3,7 @@
 Represents a player with a particular strategy.
 """
 from keno.game import Keno
-from keno.ticket import Ticket, TicketValidator
+from keno.ticket import TicketValidator
 
 
 class Player(object):
@@ -61,6 +61,10 @@ class Player(object):
         return False
 
     def go(self):
+        """
+        Keep playing same ticket type until a stop condition is met.
+        :return:
+        """
         if self.ticket is None:
             raise TypeError("ticket not set")
         i = 0
@@ -87,6 +91,8 @@ class Player(object):
             if i > 500:
                 # This shouldn't happen.
                 raise TypeError("Why so slow?")
+        # house stats.
+        return -self.net_winnings, self.tickets_played * self.ticket.games
 
     def __str__(self):
         result = "---- Player ----\n"

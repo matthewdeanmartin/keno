@@ -8,7 +8,7 @@ import copy
 import random
 
 from keno.game import Keno
-from keno.number_machine import NumbersMachine, StaticNumbersMachine
+from keno.number_machine import StaticNumbersMachine
 
 KENO = Keno()
 class Ticket(object):
@@ -47,7 +47,7 @@ class Ticket(object):
         Generate random numbers, but other strategic decisions.
         :return:
         """
-        if self.spots<1 or self.spots>20:
+        if self.spots < 1 or self.spots > 20:
             raise TypeError("Invalid spot range")
         machine = StaticNumbersMachine(self.spots)
         self._numbers = machine.draw()

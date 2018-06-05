@@ -229,7 +229,7 @@ class Keno(object):
         :rtype: set[int]
         """
         matches = set()
-        list.sort(picks)
+        # list.sort(picks)
         for pick in picks:
             if pick in state_drawing:
                 matches.add(pick)
@@ -247,14 +247,6 @@ class Keno(object):
             5: 40,
             10: 250
         }
-        dc_odds = {
-            1: 0.4008703648066716,
-            2: 0.4246870419432078,
-            3: 0.06193246478937354,
-            4: 0.06255701526780105,
-            5: 0.0375841003650798,
-            10: 0.012367191980990358
-        }
 
         if state == "DC":
             cummulative_prob = OrderedDict([(1, 0.4008703648066716),
@@ -265,7 +257,7 @@ class Keno(object):
                                             (10, 0.9999981791531241)])
             spin = random.uniform(0, 1)
             for key, value in cummulative_prob.items():
-                if key < value:
+                if value < spin:
                     return key
             return 1
 
@@ -329,7 +321,7 @@ class Keno(object):
         :rtype: int
         """
         # print(state_drawing, ticket.numbers)
-        if len(ticket.numbers) == 0:
+        if not ticket.numbers:
             raise TypeError("uninitialized ticket numbers")
         if len(ticket.numbers) != ticket.spots:
             raise TypeError("wrongly initialized ticket numbers - expected len(n) to match spots")

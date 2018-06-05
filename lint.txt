@@ -1,49 +1,79 @@
 ************* Module keno.game
-C:283, 0: Trailing newlines (trailing-newlines)
-W: 10, 0: No exception type(s) specified (bare-except)
-W: 37, 8: Using the global statement (global-statement)
-R: 18, 0: Too few public methods (1/2) (too-few-public-methods)
-C:150, 4: Method name "possible_pay_off_for_ticket_per_game" doesn't conform to snake_case naming style (invalid-name)
-R:179, 4: Method could be a function (no-self-use)
-R:187, 4: Method could be a function (no-self-use)
-R:201, 4: Method could be a function (no-self-use)
+C: 37, 0: Wrong continued indentation (add 9 spaces).
+            # "constant_numbers": [True, False] # can't really do this!!
+            ^        | (bad-continuation)
+C:343, 0: Trailing newlines (trailing-newlines)
+C:162, 4: Missing method docstring (missing-docstring)
+C:188, 4: Method name "possible_pay_off_for_ticket_per_game" doesn't conform to snake_case naming style (invalid-name)
 R:224, 4: Method could be a function (no-self-use)
+R:238, 4: Method could be a function (no-self-use)
+R:277, 4: Method could be a function (no-self-use)
 ************* Module keno.game_runner
 W: 46, 0: TODO: Maybe implement Keno of other states. (fixme)
-W: 62, 0: TODO: check minimum winning on 1 ticket!! (fixme)
-C:134, 0: Line too long (124/120) (line-too-long)
-C:177, 0: Final newline missing (missing-final-newline)
+W: 63, 0: TODO: check minimum winning on 1 ticket!! (fixme)
 R: 14, 0: Too many instance attributes (9/7) (too-many-instance-attributes)
 R: 18, 4: Too many arguments (7/5) (too-many-arguments)
-W: 57,12: Unused variable 'i' (unused-variable)
-W: 82, 8: String statement has no effect (pointless-string-statement)
-R: 72, 4: Too many branches (15/12) (too-many-branches)
+W: 47, 8: Using the global statement (global-statement)
+W: 58,12: Unused variable 'i' (unused-variable)
+W: 87, 8: String statement has no effect (pointless-string-statement)
 C:156, 4: Missing method docstring (missing-docstring)
-C:176, 4: Constant name "runner" doesn't conform to UPPER_CASE naming style (invalid-name)
-E:176,13: No value for argument 'max_ticket_types' in constructor call (no-value-for-parameter)
-E:176,13: No value for argument 'max_plays_with_ticket_type' in constructor call (no-value-for-parameter)
-E:176,13: No value for argument 'max_loss' in constructor call (no-value-for-parameter)
-E:176,13: No value for argument 'sufficient_winnings' in constructor call (no-value-for-parameter)
-E:176,13: No value for argument 'max_generations' in constructor call (no-value-for-parameter)
+C:173, 4: Missing method docstring (missing-docstring)
+R:173, 4: Method could be a function (no-self-use)
+C:210, 4: Missing function docstring (missing-docstring)
 ************* Module keno.game_runner_test
 W:  3, 0: TODO: This will haunt me until I write the tests. (fixme)
-C: 19, 0: Final newline missing (missing-final-newline)
+C: 33, 0: Final newline missing (missing-final-newline)
+************* Module keno.number_machine
+C:134, 0: Exactly one space required before assignment
+    x= timeit.timeit("""import keno.number_machine as k
+     ^ (bad-whitespace)
+C:143, 0: Trailing newlines (trailing-newlines)
+W: 11, 0: No exception type(s) specified (bare-except)
+E:  9, 4: Unable to import 'numpy' (import-error)
+R: 21, 0: Too few public methods (1/2) (too-few-public-methods)
+W: 63, 8: Using the global statement (global-statement)
+W: 64, 8: Using the global statement (global-statement)
+C: 71, 4: Missing method docstring (missing-docstring)
+C: 86, 0: Missing function docstring (missing-docstring)
+W: 87, 4: Using the global statement (global-statement)
+C:102, 0: Missing function docstring (missing-docstring)
+W:110,16: Redefining name 'i' from outer scope (line 127) (redefined-outer-name)
+W:110,16: Unused variable 'i' (unused-variable)
+W:126, 4: Using a conditional statement with a constant value (using-constant-test)
+C:130,12: Constant name "z" doesn't conform to UPPER_CASE naming style (invalid-name)
+C:134, 4: Constant name "x" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module keno.player
-R:  9, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
-C: 57, 4: Method name "go" doesn't conform to snake_case naming style (invalid-name)
-C: 57, 4: Missing method docstring (missing-docstring)
+W: 87, 0: TODO: derived column, gets out of sync? (fixme)
+R:  9, 0: Too many instance attributes (11/7) (too-many-instance-attributes)
+C: 63, 4: Method name "go" doesn't conform to snake_case naming style (invalid-name)
 ************* Module keno.player_test
-C: 22,11: Comparison should be str(player) != '' (misplaced-comparison-constant)
+W: 14, 8: Unused variable 'i' (unused-variable)
 ************* Module keno.ticket
-W:113, 8: No exception type(s) specified (bare-except)
-W:143, 8: No exception type(s) specified (bare-except)
-W:188, 8: No exception type(s) specified (bare-except)
-E:200,32: Too many arguments for format string (too-many-format-args)
+C:189, 0: Line too long (122/120) (line-too-long)
+C:250, 0: Line too long (124/120) (line-too-long)
+C:252, 0: Line too long (124/120) (line-too-long)
+R: 14, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
+W: 29, 8: Using the global statement (global-statement)
+C: 41,11: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)
+W:134, 8: No exception type(s) specified (bare-except)
+W:164, 8: No exception type(s) specified (bare-except)
+W:210, 8: No exception type(s) specified (bare-except)
+C:219,11: Do not use `len(SEQUENCE)` to determine if a sequence is empty (len-as-condition)
+E:226,32: Too many arguments for format string (too-many-format-args)
 ************* Module keno.ticket_test
-C: 22,11: Comparison should be str(ticket) != '' (misplaced-comparison-constant)
-C: 24, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
-C: 54, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
+C: 25, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
+C: 56, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
+R:  1, 0: Similar lines in 2 files
+==keno.__main__:10
+==keno.game_runner:210
+    runner = GameRunner(max_ticket_price=50,
+                        max_ticket_types=5000,
+                        max_plays_with_ticket_type=200,
+                        max_loss=5000,
+                        sufficient_winnings=10000,
+                        max_generations=4)
+    runner.run() (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 8.49/10 (previous run: 8.49/10, +0.00)
+Your code has been rated at 8.88/10 (previous run: 8.88/10, +0.00)
 

@@ -20,7 +20,7 @@ def test_ticket_str():
     """
     ticket = Ticket()
     ticket.randomize_ticket()
-    assert "" != str(ticket)
+    assert str(ticket) != ""
 
 def test_ticket_validator_is_good_ticket():
     """

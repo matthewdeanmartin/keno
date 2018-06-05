@@ -10,6 +10,8 @@ mini-first-impressions review:
 - loops, if-blocks, etc less painful than bash.
 - no easy way to redirect output of script to file
 - no way to use this to set up venvs, nor to do deployment (needs venv to run this!)
+
+Loading packages is often surprsing.
 """
 # import os
 # os.environ["PYTHONPATH"] = "."
@@ -138,6 +140,8 @@ def bumpversion():
     Fails if git isn't committed.
     :return:
     """
+    # hide until fixed.
+    return
     x = execute_get_text(" ".join(["python", "-c", '"import keno;print(keno.__version__)"']))
     print(x)
     current_version = Version(x)

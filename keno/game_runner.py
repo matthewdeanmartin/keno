@@ -67,7 +67,7 @@ class GameRunner(object):
 
             self.tickets.append(ticket)
 
-        while len(self.tickets)<self.max_ticket_types:
+        while len(self.tickets) < self.max_ticket_types:
             print("Not enough tickets with unique individuals, puffing up with dupes")
             self.tickets.extend(self.tickets)
 
@@ -97,6 +97,10 @@ class GameRunner(object):
 
             i = 0
             print("Now playing {0} tickets ".format(len(current_tickets)))
+
+            # if House net is strongly negative after lots of plays, this is a BUG!
+            house_net = 0
+            drawing_count = 0
             for ticket in current_tickets:
                 i += 1
                 jackpot = 2500
@@ -111,16 +115,15 @@ class GameRunner(object):
                 # override ticket
                 player.ticket = ticket
 
-                player.go()
+                house, played = player.go()
+                house_net += house
+                drawing_count += played
+                if drawing_count > 15000 and house_net < 0:
+                    pass
+                    # raise TypeError("WTF, the house is losing money!")
                 if player.good_game():
                     self.winners[generation + 1].append(ticket)
-                    if i < 6:
-                        print("------Good Game------ paid-{0}, won(net) {1}".format(
-                            str(ticket.price() * player.tickets_played),
-                            player.net_winnings))
-                        print(player.history)
-                    else:
-                        print('.', end='')
+                    self.report_good_games(i, player, ticket)
 
                     # print(ticket)
                     # print("Ticket Price: {0}".format(ticket.price()))
@@ -134,7 +137,7 @@ class GameRunner(object):
                 print("All tickets suck")
                 break
 
-            print("Crossing Tickets")
+
             upcoming_generation = self.winners[generation + 1]
 
             while len(self.winners[generation + 1]) < self.max_ticket_types:
@@ -142,28 +145,39 @@ class GameRunner(object):
                 self.winners[generation + 1].extend(self.winners[generation + 1])
 
             if len(upcoming_generation) >= 3:
-                for index in range(0, len(upcoming_generation) - 1, 2):
-                    upcoming_generation[index].geneticly_merge_ticket(upcoming_generation[index + 1], self.max_ticket_price)
-
-                print("Mutating Tickets")
-                if len(upcoming_generation) > 1000:
-                    # don't mutate all, mutation is very deadly.
-                    for ticket in upcoming_generation[0:500]:
-                        ticket.mutate_ticket(.1)
-
-                # children, otherwise pop shrinks too fast
-                if len(upcoming_generation) < len(self.tickets) + 500:
-                    children = []
-                    for ticket in upcoming_generation:
-                        children.append(copy.deepcopy(ticket))
-
-                    upcoming_generation.extend(children)
+                self.cross_and_mutate(upcoming_generation)
             else:
                 print("Not enough tickets left for genetic activity")
                 break
             sys.stdout.flush()
 
         self.print_results()
+
+    def cross_and_mutate(self, upcoming_generation):
+        print("Crossing Tickets")
+        for index in range(0, len(upcoming_generation) - 1, 2):
+            upcoming_generation[index].geneticly_merge_ticket(upcoming_generation[index + 1], self.max_ticket_price)
+        print("Mutating Tickets")
+        if len(upcoming_generation) > 1000:
+            # don't mutate all, mutation is very deadly.
+            for ticket in upcoming_generation[0:500]:
+                ticket.mutate_ticket(.1)
+        # children, otherwise pop shrinks too fast
+        if len(upcoming_generation) < len(self.tickets) + 500:
+            children = []
+            for ticket in upcoming_generation:
+                children.append(copy.deepcopy(ticket))
+
+            upcoming_generation.extend(children)
+
+    def report_good_games(self, i, player, ticket):
+        if i < 6:
+            print("------Good Game------ paid-{0}, won(net) {1}".format(
+                str(ticket.price() * player.tickets_played),
+                player.net_winnings))
+            print(player.history)
+        else:
+            print('.', end='')
 
     def print_results(self):
         """
@@ -183,7 +197,7 @@ class GameRunner(object):
         i = 0
         for winner, occurance in d_descending.items():
             i += 1
-            if i< len(d_descending)-5:
+            if i < len(d_descending) - 5:
                 continue
             print("------{0}------".format(occurance))
             print(winner)
@@ -193,5 +207,14 @@ class GameRunner(object):
 
 
 if __name__ == "__main__":
-    runner = GameRunner(50)
-    runner.run()
+    def run():
+        runner = GameRunner(max_ticket_price=50,
+                            max_ticket_types=5000,
+                            max_plays_with_ticket_type=200,
+                            max_loss=5000,
+                            sufficient_winnings=10000,
+                            max_generations=4)
+        runner.run()
+
+
+    run()
