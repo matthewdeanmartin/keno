@@ -36,15 +36,15 @@ class Ticket(object):
         Faster than copy/deepcopy
         :return:
         """
-        t = Ticket()
-        t.spots = self.spots
-        t.games = self.games
-        t.bet = self.bet
-        t.bonus = self.bonus
-        t.super_bonus = self.super_bonus
-        t._numbers = self._numbers
-        t.state = self.state
-        return t
+        copy_ticket = Ticket()
+        copy_ticket.spots = self.spots
+        copy_ticket.games = self.games
+        copy_ticket.bet = self.bet
+        copy_ticket.bonus = self.bonus
+        copy_ticket.super_bonus = self.super_bonus
+        copy_ticket._numbers = self._numbers
+        copy_ticket.state = self.state
+        return copy_ticket
 
     @property
     def numbers(self):
@@ -52,7 +52,7 @@ class Ticket(object):
         Make sure this doesn't accidentally get mutated.
         :type: dict[str,list[int|bool]]
         """
-        if len(self._numbers) == 0:
+        if not self._numbers:
             self.pick()
         return self._numbers
 
@@ -216,9 +216,9 @@ class Ticket(object):
         :return:
         """
         return hash(":".join(list(map(str, [self.spots, self.games,
-                                           self.bet,
-                                           self.bonus, self.super_bonus,
-                                           self.state]))))
+                                            self.bet,
+                                            self.bonus, self.super_bonus,
+                                            self.state]))))
 
 
 class TicketValidator(object):

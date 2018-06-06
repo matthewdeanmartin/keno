@@ -38,6 +38,8 @@ class StaticNumbersMachine(object):
         user picks 1 - 10, but lotto draws 20!
         :return:
         """
+        # are the boring numbers as good as any other?
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][0:self.spots]
         return [4, 18, 19, 20, 24, 26, 30, 32, 37, 44, 48, 51, 53, 54, 56, 57, 68, 69, 70, 77][0:self.spots]
 
 class NumbersMachine(object):
@@ -146,4 +148,3 @@ if __name__ == "__main__":
         i += 1
         next(k.generate_lots_of_numbers())""", number=1)
         print(result)
-

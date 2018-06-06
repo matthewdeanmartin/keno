@@ -93,7 +93,7 @@ class Player(object):
             self.net_winnings = self.winnings - self.expenses
             self.history_running_bank.append(self.net_winnings)
 
-            if i > 500:
+            if i > self.max_tickets_bought+1:
                 # This shouldn't happen.
                 raise TypeError("Why so slow?")
         # house stats.

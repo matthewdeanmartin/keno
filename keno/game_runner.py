@@ -46,6 +46,9 @@ class Strategy(object):
         # How much do you want to win (i.e. a ticket that regularly wins $2 isn't exciting)
         self.sufficient_winnings = sufficient_winnings
 
+        self.scaled_max_bet = 0.0
+        # percent of net_winnings (bet more if winning more, bet less if losing/winning les)
+
 
 class EvolutionParameters(object):
     """
@@ -68,9 +71,14 @@ class EvolutionParameters(object):
 
         # mutate too much and you get a loser
         self.mutation_percent = mutation_percent
+        self.percent_of_population_to_mutate = .5
 
         # Evolution moves faster if best get a bigger bonus
         self.fitness_bonus = fitness_bonus
+
+        # minimum to survive a culling round
+        self.minimum_survivors = 10
+
 
 
 class GameRunner(object):
@@ -93,7 +101,7 @@ class GameRunner(object):
         self.tickets = []
 
         # Stores each generation
-        self.winners = None
+        self.generations = None
 
         # TODO: Maybe implement Keno of other states.
         global  KENO
@@ -110,8 +118,11 @@ class GameRunner(object):
         for _ in range(0, self.evolution_parameters.max_ticket_types):
             ticket = Ticket()
             ticket.randomize_ticket()
-            if ticket in self.tickets:
-                continue
+
+            # This keeps the initial pop too small for a genetic algo!
+            # if ticket in self.tickets:
+            #     continue
+
             # TODO: check minimum winning on 1 ticket!!
 
             # don't waste time on these tickets
@@ -135,18 +146,20 @@ class GameRunner(object):
         self.generate_initial_population()
 
         lives = [Life(t, 0) for t in self.tickets]
-        self.winners = {
+        self.generations = {
             0: lives,
         }
         """:type: dict[int,list[Life]]"""
-
+        self.true_winners = {
+            0: lives
+        }
         for generation in range(0, self.evolution_parameters.max_generations):
             print("Generation {0}".format(generation))
             # round 2+, iterate winners, not orig tickets
 
             # track all generations
-            current_lives = self.winners[generation]
-            self.winners[generation + 1] = []
+            current_lives = self.generations[generation]
+            self.generations[generation + 1] = []
 
             i = 0
             print("Now playing {0} tickets ".format(len(current_lives)))
@@ -176,38 +189,41 @@ class GameRunner(object):
                     pass
                     # raise TypeError("WTF, the house is losing money!")
                 if player.good_game():
-                    self.winners[generation + 1].append(Life(ticket, player.evolutionary_fitness()))
+                    self.generations[generation + 1].append(Life(ticket, player.evolutionary_fitness()))
                     self.report_good_games(i, player, ticket)
 
-            remaining = len(self.winners[generation + 1])
+            remaining = len(self.generations[generation + 1])
+            self.true_winners[generation + 1] = self.generations[generation + 1]
             print("Remaining winners: {0}".format(remaining))
             if remaining == 0:
                 print("All tickets suck")
+                self.print_results()
+                print("Early termination")
                 break
 
             if generation == self.evolution_parameters.max_generations:
                 # don't add mutants, etc to final generation!
                 break
 
-            upcoming_generation = self.winners[generation + 1]
+            upcoming_generation = self.generations[generation + 1]
 
             # TODO: reward better with more slots in next generation
-            while len(self.winners[generation + 1]) < self.evolution_parameters.max_ticket_types:
+            while len(self.generations[generation + 1]) < self.evolution_parameters.max_ticket_types:
                 print("Puffing up population of tickets")
 
-                split_on = int(len(self.winners[generation + 1]) / 2)
-                top = sorted(self.winners[generation + 1], key=lambda x: x.fitness)[0:split_on]
-                bottom = sorted(self.winners[generation + 1], key=lambda x: x.fitness)[split_on:]
+                split_on = int(len(self.generations[generation + 1]) / 2)
+                top = sorted(self.generations[generation + 1], key=lambda x: x.fitness)[0:split_on]
+                bottom = sorted(self.generations[generation + 1], key=lambda x: x.fitness)[split_on:]
                 to_add = []
                 for life in top:
                     # range(0,2) == [0,1]
-                    for _ in range(0,self.evolution_parameters.fitness_bonus):
+                    for _ in range(0, self.evolution_parameters.fitness_bonus):
                         to_add.append(life)
 
                 for life in bottom:
                     to_add.append(life)
 
-                self.winners[generation + 1].extend(to_add)
+                self.generations[generation + 1].extend(to_add)
 
             if len(upcoming_generation) >= 3:
                 self.cross_and_mutate(upcoming_generation)
@@ -267,7 +283,7 @@ class GameRunner(object):
         :return:
         """
         histo = {}
-        for winner in self.winners[max(self.winners.keys())]:
+        for winner in self.true_winners[max(self.true_winners.keys())]:
             if winner in histo.keys():
                 histo[winner] += 1
             else:
