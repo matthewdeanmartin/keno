@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-create_it()
+create_it_pipenv_style()
+{
+    pipenv install
+    pipenv shell
+}
+
+create_it_conda_style()
 {
     export PATH="$HOME/miniconda3/bin:$PATH"
     conda create --name keno_conda_env

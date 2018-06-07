@@ -21,7 +21,9 @@ with open(os.path.join(here, PROJECT_NAME, "__version__.py")) as f:
 if sys.argv[-1] == "publish":
     os.system("python setup.py sdist bdist_wheel upload")
     sys.exit()
+
 required = [
+    'docopt'
 ]
 
 
@@ -122,7 +124,7 @@ setup(
     cmdclass={'upload': UploadCommand, 'deb': DebCommand},
     # setup_cfg=True,
     setup_requires=['pbr'],
-    pbr=True,
+    pbr=False,
 
     data_files=[]
 )

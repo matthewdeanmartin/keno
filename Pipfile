@@ -13,8 +13,10 @@ prospector = "*"
 nose = "*"
 sphinx = "*"
 safety = "*"
+pbr = "*"
 
 [packages]
+docopt = "*"
 
 [requires]
 python_version = "3.6"

@@ -32,10 +32,12 @@ def test_three_six_ticket():
         print("winning: " + str(player.history))
         print("bank: " + str(player.history_running_bank))
         if player.good_game():
-            gg +=1
-        plays +=1
+            gg += 1
+        plays += 1
     print("Percent time good game")
     print(gg/plays)
+
+
 def test_player():
     """
     Basic call

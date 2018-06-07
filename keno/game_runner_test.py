@@ -12,11 +12,11 @@ def xxx_slow_game():
     :return:
     """
     runner = GameRunner(Strategy(max_ticket_price=50,
-                                 max_ticket_types=5000,  # Almost all possible
                                  max_plays_with_ticket_type=75,
                                  max_loss=160,  # double average per capita annual play in md
                                  sufficient_winnings=2500),
                         EvolutionParameters(max_generations=8,
+                                            max_ticket_types=5000,  # Almost all possible
                                             mutation_percent=.25,
                                             fitness_bonus=2))  # 1 ticket type dominates by about 8
     runner.run()

@@ -5,81 +5,15 @@ Poorly named, this is the main code.
 import sys
 from collections import OrderedDict, namedtuple
 
+from keno.evolutionary_parameters import EvolutionParameters
 from keno.game import Keno
 from keno.player import Player
+from keno.strategy import Strategy
 from keno.ticket import Ticket
 
 KENO = Keno()
 
 Life = namedtuple('Life', ['ticket', 'fitness'], verbose=False)
-
-
-class Strategy(object):
-    """
-    Represents the player's risk tollerances.
-    (Not the simulated player's risk tollerances!)
-    """
-
-    def __init__(self, max_ticket_price,
-                 max_plays_with_ticket_type,
-                 max_loss, sufficient_winnings):
-        """
-        Initialize self
-        :type max_ticket_price: int
-        :type max_plays_with_ticket_type: int
-        :type max_loss: int
-        :type sufficient_winnings: int
-        """
-        if max_loss < max_ticket_price:
-            raise TypeError("Max loss > max ticket price, you know tickets often end in 0 winnings?")
-
-        # has a relationship to max_loss
-        # games also put limits on price of single ticket
-        self.max_ticket_price = max_ticket_price
-
-        # If a ticket takes 100 years to pay off, then who cares?
-        self.max_plays_with_ticket_type = max_plays_with_ticket_type
-
-        # How much is a player willing to lose (i.e. when is gambler's ruin?)
-        self.max_loss = max_loss
-
-        # How much do you want to win (i.e. a ticket that regularly wins $2 isn't exciting)
-        self.sufficient_winnings = sufficient_winnings
-
-        self.scaled_max_bet = 0.0
-        # percent of net_winnings (bet more if winning more, bet less if losing/winning les)
-
-
-class EvolutionParameters(object):
-    """
-    How will the game of evolution work
-    """
-
-    def __init__(self, max_ticket_types, max_generations, mutation_percent, fitness_bonus):
-        """
-        Initialize self
-        :type max_ticket_types: int
-        :type max_generations: int
-        :type mutation_percent: float
-        :type fitness_bonus: int
-        """
-        # respresents strategies/ticket choices, initial population variety
-        self.max_ticket_types = max_ticket_types
-
-        # how many rounds of playing/culling/crossing/mutating
-        self.max_generations = max_generations
-
-        # mutate too much and you get a loser
-        self.mutation_percent = mutation_percent
-        self.percent_of_population_to_mutate = .5
-
-        # Evolution moves faster if best get a bigger bonus
-        self.fitness_bonus = fitness_bonus
-
-        # minimum to survive a culling round
-        self.minimum_survivors = 10
-
-
 
 class GameRunner(object):
     """
@@ -102,6 +36,7 @@ class GameRunner(object):
 
         # Stores each generation
         self.generations = None
+        self.true_winners = None
 
         # TODO: Maybe implement Keno of other states.
         global  KENO

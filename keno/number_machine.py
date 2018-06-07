@@ -71,6 +71,10 @@ class NumbersMachine(object):
         return drawing
 
     def draw_no_caching(self):
+        """
+        Force machine to draw new numbers, ignore caching possibilities
+        :return:
+        """
         # sample might be faster?
         if not HAVE_NUMPY:
             # slower
@@ -86,6 +90,10 @@ class NumbersMachine(object):
 
 
 def pick_twenty():
+    """
+    Function version of same code in class
+    :return:
+    """
     global EIGHTY_NUMBERS
 
     # sample might be faster?
@@ -102,6 +110,10 @@ def pick_twenty():
     return drawing
 
 def generate_lots_of_numbers():
+    """
+    Utility function for creating a cache of a lot of numbers
+    :return:
+    """
     file_name = "numbers.txt"
     # search
     if not os.path.isfile(file_name):
@@ -136,9 +148,10 @@ if __name__ == "__main__":
             result = next(generate_lots_of_numbers())
             print(result)
         exit()
+
     def timings():
         """
-        Exercise cod
+        Exercise code
         :return:
         """
         import timeit

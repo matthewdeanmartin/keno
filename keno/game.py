@@ -33,7 +33,7 @@ class Keno(object):
             "bet": [1, 2, 3, 4, 5, 10, 20],
             "bonus": [True, False],
             "super_bonus": [True, False],
-            "state": ["MD", "DC"]
+            "state": ["MD", "DC"]  # , "WV", "OH" ... other states not ready yet.
             # "constant_numbers": [True, False] # can't really do this!!
         }
         self.dc_pay_off_chart = {
@@ -217,6 +217,65 @@ class Keno(object):
                 1: 2
             }
         }
+        self.oh_pay_off_chart = {
+            10: {
+                10: 100_000,
+                9: 5_000,
+                8: 500,
+                7: 50,
+                6: 10,
+                5: 2,
+                0: 5
+            },
+            9: {
+                9: 25_000,
+                8: 2_000,
+                7: 100,
+                6: 20,
+                5: 5,
+                0: 2
+            },
+            8: {
+                8: 10_000,
+                7: 300,
+                6: 50,
+                5: 15,
+                4: 2
+            },
+            7: {
+                7: 2000,
+                6: 100,
+                5: 11,
+                4: 5,
+                3: 1
+            },
+            6: {
+                6: 1100,
+                5: 57,
+                4: 7,
+                3: 1
+            },
+            5: {
+                5: 410,
+                4: 18,
+                3: 2
+            },
+            4: {
+                4: 72,
+                3: 5,
+                2: 1
+            },
+            3: {
+                3: 27,
+                2: 2
+            },
+            2: {
+                2: 11
+            },
+            1: {
+                1: 2
+            }
+        }
 
     def pay_off_chart(self, state):
         if state == "MD":
@@ -227,7 +286,8 @@ class Keno(object):
 
         if state == "WV":
             return self.wv_pay_off_chart
-
+        if state == "OH":
+            return self.wv_pay_off_chart
         raise TypeError("Don't know that state")
 
 
@@ -302,13 +362,6 @@ class Keno(object):
         Rule confusing...I think this is determined as a function of drawying and/or user selections
         :rtype: int
         """
-        md_odds = {
-
-            3: 3,
-            4: 15,
-            5: 40,
-            10: 250
-        }
 
         if state == "DC":
             cummulative_prob = OrderedDict([(1, 0.4008703648066716),
@@ -324,6 +377,13 @@ class Keno(object):
             return 1
 
         if state == "MD":
+            md_odds = {
+
+                3: 3,
+                4: 15,
+                5: 40,
+                10: 250
+            }
             for key, value in md_odds.items():
                 if random.randint(0, value * 10) < 10:
                     return key
@@ -341,7 +401,7 @@ class Keno(object):
         Rule confusing...I think this is determined as a function of drawying and/or user selections
         :rtype: int
         """
-        if state == "DC":
+        if state in ("DC", "WV", "OH"):
             return 1
         odds = {
             2:2.4,
