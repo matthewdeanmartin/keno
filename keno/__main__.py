@@ -14,7 +14,7 @@ def run():
     timer = Timer()
     print(timer.start())
     s1 = Strategy(max_ticket_price=50,
-                  max_plays_with_ticket_type=1000,
+                  max_plays_with_ticket_type=500,
                   max_loss=180,
                   sufficient_winnings=5000)
     s2 = Strategy(max_ticket_price=100,
@@ -26,10 +26,10 @@ def run():
                   max_loss=50,
                   sufficient_winnings=10_000)
     runner = GameRunner(s1,
-                        EvolutionParameters(max_generations=3,
-                                            mutation_percent=.20,
-                                            fitness_bonus=3,
-                                            max_ticket_types=10000))
+                        EvolutionParameters(max_generations=10,
+                                            mutation_percent=.10,
+                                            fitness_bonus=2,
+                                            max_ticket_types=5000))
     runner.run()
     print(timer.elapsed("Done!"))
 run()

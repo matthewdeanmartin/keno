@@ -4,6 +4,8 @@ Poorly named, this is the main code.
 """
 import sys
 from collections import OrderedDict, namedtuple
+from functools import partial
+from multiprocessing.pool import Pool
 
 from keno.evolutionary_parameters import EvolutionParameters
 from keno.game import Keno
@@ -14,6 +16,14 @@ from keno.ticket import Ticket
 KENO = Keno()
 
 Life = namedtuple('Life', ['ticket', 'fitness'], verbose=False)
+
+
+def simulate(ticket, strategy):
+    player = Player(strategy)
+    # override ticket
+    player.ticket = ticket
+    house, played = player.go()
+    return house, played, player
 
 class GameRunner(object):
     """
@@ -102,22 +112,29 @@ class GameRunner(object):
             # if House net is strongly negative after lots of plays, this is a BUG!
             house_net = 0
             drawing_count = 0
-            for ticket, fitness in current_lives:
+
+            playable = []
+            for ticket, _ in current_lives:
                 i += 1
-                jackpot = 2500
-                if not self.keno.can_i_win_this_much(ticket, jackpot):
+
+                # need to be able to win 1/2 as much as target in single winning.
+                if not self.keno.can_i_win_this_much(ticket, self.strategy.sufficient_winnings/2):
                     # loser ticket.
                     continue
                 if ticket.price() > self.strategy.max_ticket_price:
                     # costs too much now... loser
                     continue
+                playable.append(ticket)
 
-                player = Player(self.strategy)
-                # override ticket
-                player.ticket = ticket
+            agents = int(8/2)
+            chunksize = 100
 
+            with Pool(processes=agents) as pool:
+                results = pool.map(partial(simulate, strategy=self.strategy), playable, chunksize)
+
+            for house, played, player in results:
                 # this is the fitness function, currently binary (good/not good)
-                house, played = player.go()
+
                 house_net += house
                 drawing_count += played
                 if drawing_count > 15000 and house_net < 0:
