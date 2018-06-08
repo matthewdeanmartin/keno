@@ -4,6 +4,7 @@ Draw numbers...fast.
 """
 # import ast
 import os
+from itertools import cycle
 
 try:
     import numpy as np
@@ -132,9 +133,18 @@ def generate_lots_of_numbers():
             #yield ast.literal_eval(row) # 10.52
             #yield eval(row) # 9.6
             #yield [x for x in map(int,row.replace("[","").replace("]","").split(","))] # 6.86, 6.42, 6.11, 6.29
-            yield[x for x in map(int, row[1:len(row)-2].split(","))] # 6.2, 6.05, 6.23, 6.38, 5.74
+            try:
+                value = [x for x in map(int, row[1:len(row) - 2].split(","))]
+            except ValueError:
+                continue
+            yield value # 6.2, 6.05, 6.23, 6.38, 5.74
 
-GENERATOR = generate_lots_of_numbers()
+GENERATOR = cycle(generate_lots_of_numbers())
+
+# fix seeding on multithreading
+skips = random.randint(0,5000)
+for _ in range(0,skips):
+    next(GENERATOR)
 
 if __name__ == "__main__":
     def run():

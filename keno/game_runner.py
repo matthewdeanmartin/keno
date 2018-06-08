@@ -3,6 +3,7 @@
 Poorly named, this is the main code.
 """
 import sys
+import multiprocessing
 from collections import OrderedDict, namedtuple
 from functools import partial
 from multiprocessing.pool import Pool
@@ -77,7 +78,8 @@ class GameRunner(object):
             self.tickets.append(ticket)
 
         while len(self.tickets) < self.evolution_parameters.max_ticket_types:
-            print("Not enough tickets with unique individuals, puffing up with dupes")
+            print("Not enough tickets with unique individuals, puffing up with dupes have {0}. Need {1}".format(
+                len(self.tickets), self.evolution_parameters.max_ticket_types))
             self.tickets.extend(self.tickets)
 
         print("Have {0} tickets. Now ready to play".format(len(self.tickets)))
@@ -126,10 +128,17 @@ class GameRunner(object):
                     continue
                 playable.append(ticket)
 
-            agents = int(8/2)
-            chunksize = 100
 
-            with Pool(processes=agents) as pool:
+            workers = multiprocessing.cpu_count()
+            chunksize = int(len(playable) / workers)
+
+            if len(playable) == 0:
+                print("All tickets suck")
+                self.print_results()
+                print("Early termination")
+                break
+
+            with Pool(processes=workers) as pool:
                 results = pool.map(partial(simulate, strategy=self.strategy), playable, chunksize)
 
             for house, played, player in results:
@@ -147,11 +156,7 @@ class GameRunner(object):
             remaining = len(self.generations[generation + 1])
             self.true_winners[generation + 1] = self.generations[generation + 1]
             print("Remaining winners: {0}".format(remaining))
-            if remaining == 0:
-                print("All tickets suck")
-                self.print_results()
-                print("Early termination")
-                break
+
 
             if generation == self.evolution_parameters.max_generations:
                 # don't add mutants, etc to final generation!
@@ -161,7 +166,9 @@ class GameRunner(object):
 
             # TODO: reward better with more slots in next generation
             while len(self.generations[generation + 1]) < self.evolution_parameters.max_ticket_types:
-                print("Puffing up population of tickets")
+                print("Puffing up population of tickets-- have {0}, need {1}"
+                      .format(len(self.generations[generation + 1]),
+                              self.evolution_parameters.max_ticket_types))
 
                 split_on = int(len(self.generations[generation + 1]) / 2)
                 top = sorted(self.generations[generation + 1], key=lambda x: x.fitness)[0:split_on]
