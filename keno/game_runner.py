@@ -74,6 +74,10 @@ class GameRunner(object):
             # don't waste time on these tickets
             if ticket.price() > self.strategy.max_ticket_price:
                 continue
+            if ticket.price() < self.strategy.minimum_ticket_price:
+                continue
+            if ticket.state not in self.strategy.state_range:
+                continue
 
             self.tickets.append(ticket)
 
@@ -158,7 +162,7 @@ class GameRunner(object):
 
             remaining = len(self.generations[generation + 1])
             self.true_winners[generation + 1] = self.generations[generation + 1]
-            print("Remaining winners: {0}".format(remaining))
+            print("\nRemaining winners: {0}".format(remaining))
 
 
             if generation == self.evolution_parameters.max_generations:
@@ -210,13 +214,13 @@ class GameRunner(object):
         for index in range(0, len(upcoming_generation) - 1, 2):
             # cross tickets & immediately remove overpriced
             upcoming_generation[index].ticket.geneticly_merge_ticket(upcoming_generation[index + 1].ticket,
-                                                                     self.strategy.max_ticket_price)
+                                                                     self.strategy)
 
         print("Mutating Tickets")
         if len(upcoming_generation) > 1000:
             # don't mutate all, mutation is very deadly.
             for ticket, fitness in upcoming_generation[0:500]:
-                ticket.mutate_ticket(self.evolution_parameters.mutation_percent)
+                ticket.mutate_ticket(self.evolution_parameters.mutation_percent, self.strategy)
 
         # children, otherwise pop shrinks too fast
         if len(upcoming_generation) < len(self.tickets) + 500:
@@ -265,7 +269,7 @@ class GameRunner(object):
             i += 1
             if i < len(d_descending) - 5:
                 continue
-            print("------{0}------".format(occurance))
+            print("------Occurance in final generation {0}------".format(occurance))
             print(winning_ticket)
             print("Ticket Price: {0}".format(winning_ticket.price()))
             print("Fitness (net winnigs): {0}".format(winning_ticket.fitness))
@@ -280,7 +284,9 @@ if __name__ == "__main__":
         Exercise code
         :return:
         """
-        runner = GameRunner(Strategy(max_ticket_price=50,
+        runner = GameRunner(Strategy(state_range=["MD", "DC", "WV", "OH"],
+                                     min_ticket_price=0,
+                                     max_ticket_price=50,
 
                                      max_plays_with_ticket_type=200,
                                      max_loss=5000,

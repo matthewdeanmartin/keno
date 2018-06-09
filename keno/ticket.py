@@ -149,11 +149,11 @@ class Ticket(object):
             "state":self.state
         }
 
-    def geneticly_merge_ticket(self, ticket, max_price):
+    def geneticly_merge_ticket(self, ticket, strategy):
         """
         Make this ticket 1/2 like the other ticket
         :type ticket: Ticket
-        :type max_price: int
+        :type strategy: Strategy
         :return:
         """
         if self == ticket:
@@ -181,18 +181,22 @@ class Ticket(object):
             validator = TicketValidator()
             validator.check_all_prizes_winnable(self)
             validator.check_ticket(self)
-            if self.price() > max_price:
-                raise TypeError("nope")
+            if self.price() > strategy.max_ticket_price:
+                raise TypeError("too big")
+            if self.price() < strategy.minimum_ticket_price:
+                raise TypeError("too small")
+
         except:
             # undo
             for key in keys:
                 #setattr(self, key, getattr(save_point, key))
                 setattr(self, key, save_point[key])
 
-    def mutate_ticket(self, percent):
+    def mutate_ticket(self, percent, strategy):
         """
         Make this ticket change to random property for up to n percent
         :type percent:float
+        :type strategy: Strategy
         :return:
         """
         # save_point = copy.deepcopy(self)
@@ -215,6 +219,10 @@ class Ticket(object):
             validator = TicketValidator()
             validator.check_all_prizes_winnable(self)
             validator.check_ticket(self)
+            if self.price() > strategy.max_ticket_price:
+                raise TypeError("too big")
+            if self.price() < strategy.minimum_ticket_price:
+                raise TypeError("too small")
         except:
             # undo
             for key in keys:

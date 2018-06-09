@@ -9,7 +9,7 @@ class Strategy(object):
     (Not the simulated player's risk tollerances!)
     """
 
-    def __init__(self, max_ticket_price,
+    def __init__(self, state_range, min_ticket_price, max_ticket_price,
                  max_plays_with_ticket_type,
                  max_loss, sufficient_winnings):
         """
@@ -21,6 +21,9 @@ class Strategy(object):
         """
         if max_loss < max_ticket_price:
             raise TypeError("Max loss > max ticket price, you know tickets often end in 0 winnings?")
+
+        self.state_range = state_range
+        self.minimum_ticket_price = min_ticket_price
 
         # has a relationship to max_loss
         # games also put limits on price of single ticket

@@ -65,13 +65,19 @@ Programming Gotchas
 
 This is python3.
 
-One quarter of time is spent simulating drawings. This is very slow
-unless numpy is installed. random.shuffle is slow. numpy appears to add
-a startup cost. Nothing else is especially expensive.
-
-As of right now, no user input and the go() method should be broken into
-classes.
+Brand new drawings are expensive random.shuffle, random.sample are slow.
+The numpy version of the same is faster. Fastest is to pre-calculate
+drawings. This creates a large 8GB file
 
 My factoring of things into classes probably is a bit dodgy.
 
-I ran out of time to add all the project niceties, like a build script.
+TODO:
+-----
+
+Strategies based on rounding errors- prizes are rounded to nearest 5,
+100, 1000 but probabilities are exact. So some bets must have a slightly
+higher expected value.
+
+Strategies based on reporting level- Winning a buck less than the
+reporting limit is better than winning a buck more than the reporting
+cut off.

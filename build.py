@@ -178,7 +178,10 @@ def lint():
 
     execute("./run_pylint.sh")
 
-    num_lines = sum(1 for line in open('lint.txt'))
+    num_lines = sum(1 for line in open('lint.txt')
+                    if "*************" not in line
+                    and "---------------------" not in line
+                    and "Your code has been rated at" not in line)
     if num_lines> 100:
         raise TypeError("Too many lines of lint : {0}".format(num_lines))
 

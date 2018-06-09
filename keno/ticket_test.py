@@ -2,7 +2,7 @@
 """
 Exercise ticket (a data structure) and TicketValidator, which checks ticket related game rules.
 """
-
+from keno.strategy import Strategy
 from keno.ticket import Ticket, TicketValidator
 
 
@@ -35,10 +35,16 @@ def test_ticket_validator_mutate():
     """
     Basic call
     """
+    strategy = Strategy(state_range=["DC", "MD"],
+             min_ticket_price=0,
+             max_ticket_price=100,
+             max_loss=160,
+             sufficient_winnings=2000,
+             max_plays_with_ticket_type=365)
     ticket = Ticket()
     ticket.randomize_ticket()
     ticket.pick()
-    ticket.mutate_ticket(.5)
+    ticket.mutate_ticket(.5, strategy)
 
 def test_ticket_validator_merge():
     """
