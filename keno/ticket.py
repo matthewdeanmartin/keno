@@ -17,13 +17,16 @@ class Ticket(object):
     Assumes that the exact numbers are not a real choice, that one set of numbers is as good as the next.
     """
     def __init__(self):
+        self.to_go = False
         self.spots = -1
         self.games = -1
         self.bet = -1
         self.bonus = None
         self.super_bonus = None
-        self._numbers = []
         self.state = None
+
+        self._numbers = []
+
 
         global KENO
         self.rules = KENO
@@ -31,19 +34,24 @@ class Ticket(object):
         # within same 3 mintues!!
         # self.constant_numbers = False
 
+        self.history = {}
+        self.fitness = 0
+
     def copy(self):
         """
         Faster than copy/deepcopy
         :return:
         """
         copy_ticket = Ticket()
+        copy_ticket.to_go = self.to_go
         copy_ticket.spots = self.spots
         copy_ticket.games = self.games
         copy_ticket.bet = self.bet
         copy_ticket.bonus = self.bonus
         copy_ticket.super_bonus = self.super_bonus
-        copy_ticket._numbers = self._numbers
         copy_ticket.state = self.state
+
+        copy_ticket._numbers = self._numbers
         return copy_ticket
 
     @property
@@ -90,9 +98,12 @@ class Ticket(object):
         i = 0
         while i == 0 or not validator.is_good_ticket(self):
             i += 1
-            for key, value in self.rules.ticket_ranges.items():
-                setattr(self, key, self.rules.ticket_ranges[key][random.randint(0, len(value)-1)])
-
+            self.to_go = [True, False][random.randint(0, 2 - 1)]
+            ranges = self.rules.ticket_ranges(self.to_go)
+            for key, value in ranges.items():
+                if key == "to_go":
+                    continue
+                setattr(self, key, ranges[key][random.randint(0, len(value) - 1)])
 
             if self.bonus and self.super_bonus and self.state == "MD":
                 if random.randint(0, 1) == 1:
@@ -103,9 +114,11 @@ class Ticket(object):
                     self.super_bonus = True
             if self.state == "DC":
                 self.super_bonus = False
+                self.to_go = False
 
             if i > 200:
                 raise TypeError("Can't generate a good ticket!")
+
 
     def __str__(self):
         """
@@ -115,7 +128,7 @@ class Ticket(object):
         result = "----- Ticket ------\n"
         md_keno = Keno()
 
-        for key in sorted(md_keno.ticket_ranges):
+        for key in sorted(md_keno.ticket_ranges(self.to_go)):
             result += "{0}, {1}".format(key, getattr(self, key))
             result += "\n"
         return result
@@ -126,6 +139,7 @@ class Ticket(object):
         :return:
         """
         return {
+            "to_go": self.to_go,
             "spots" :self.spots,
             "games":self.games,
             "bet":self.bet,
@@ -146,11 +160,21 @@ class Ticket(object):
             # crossing with a clone.
             return
         save_point = self.make_save_point()
-        keys = [x for x in self.rules.ticket_ranges.keys()]
+
+        keys = [x for x in self.rules.ticket_ranges(self.to_go).keys()]
         random.shuffle(keys)
         for key in keys:
             if random.randint(0, 1) == 1:
-                setattr(self, key, getattr(ticket, key))
+                if ticket.to_go == self.to_go:
+                    setattr(self, key, getattr(ticket, key))
+                else:
+                    if key in ("to_go", "bet", "games"):
+                        setattr(self, "to_go", getattr(ticket, "to_go"))
+                        setattr(self, "games", getattr(ticket, "games"))
+                        setattr(self, "bet", getattr(ticket, "bet"))
+                    else:
+                        setattr(self, key, getattr(ticket, key))
+
 
         try:
             # This mutant valid?
@@ -177,9 +201,9 @@ class Ticket(object):
         mutation_ticket = Ticket()
         mutation_ticket.randomize_ticket()
 
-        features = len(self.rules.ticket_ranges)
+        features = len(self.rules.ticket_ranges(self.to_go))
         i = 0
-        keys = [x for x in self.rules.ticket_ranges.keys()]
+        keys = [x for x in self.rules.ticket_ranges(self.to_go).keys()]
         random.shuffle(list(keys))
         for key in keys:
             i += 1
@@ -196,6 +220,17 @@ class Ticket(object):
             for key in keys:
                 setattr(self, key, save_point[key])
 
+    def __hash__(self):
+        """
+        Allow this to be in dictionary for histogram calculations
+        :return:
+        """
+        return hash(":".join(list(map(str, [self.to_go,
+                                            self.spots,
+                                            self.games,
+                                            self.bet,
+                                            self.bonus, self.super_bonus,
+                                            self.state]))))
     def __eq__(self, other):
         """
         Check equality
@@ -203,22 +238,13 @@ class Ticket(object):
         :rtype:bool
         """
         # numbers & rules ignored right now.
-        return self.spots == other.spots and \
-                self.games == other.games and \
-                self.bet == other.bet and \
-                self.bonus == other.bonus and \
-                self.super_bonus == other.super_bonus and \
-                self.state == other.state
-
-    def __hash__(self):
-        """
-        Allow this to be in dictionary for histogram calculations
-        :return:
-        """
-        return hash(":".join(list(map(str, [self.spots, self.games,
-                                            self.bet,
-                                            self.bonus, self.super_bonus,
-                                            self.state]))))
+        return self.to_go == other.to_go and \
+               self.spots == other.spots and \
+               self.games == other.games and \
+               self.bet == other.bet and \
+               self.bonus == other.bonus and \
+               self.super_bonus == other.super_bonus and \
+               self.state == other.state
 
 
 class TicketValidator(object):
@@ -253,8 +279,8 @@ class TicketValidator(object):
         if len(ticket.numbers) != ticket.spots:
             raise TypeError("numbers wrongly initialized")
 
-        for key, value in self.md_keno.ticket_ranges.items():
-            if getattr(ticket, key) not in self.md_keno.ticket_ranges[key]:
+        for key, value in self.md_keno.ticket_ranges(ticket.to_go).items():
+            if getattr(ticket, key) not in self.md_keno.ticket_ranges(ticket.to_go)[key]:
                 raise TypeError("Bad ticket {0} can be {1}, but got {2}".format(key,
                                                                             value,
                                                                             getattr(ticket, key)))

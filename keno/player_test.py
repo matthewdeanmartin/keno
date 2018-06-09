@@ -19,6 +19,7 @@ def test_three_six_ticket():
                                  max_plays_with_ticket_type=365))
         ticket = Ticket()
         ticket.randomize_ticket()
+        ticket.to_go = False
         ticket.bet = 3
         ticket.bonus = False
         ticket.super_bonus = False

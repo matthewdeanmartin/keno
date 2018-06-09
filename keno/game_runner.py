@@ -2,8 +2,8 @@
 """
 Poorly named, this is the main code.
 """
-import sys
 import multiprocessing
+import sys
 from collections import OrderedDict, namedtuple
 from functools import partial
 from multiprocessing.pool import Pool
@@ -46,8 +46,8 @@ class GameRunner(object):
         self.tickets = []
 
         # Stores each generation
-        self.generations = None
-        self.true_winners = None
+        self.generations = {}  # generation: ticket
+        self.true_winners = {}  # generation: list(Ticket)
 
         # TODO: Maybe implement Keno of other states.
         global  KENO
@@ -76,6 +76,9 @@ class GameRunner(object):
                 continue
 
             self.tickets.append(ticket)
+
+        if not self.tickets:
+            raise TypeError("No possible valid tickets? Something must be wrong.")
 
         while len(self.tickets) < self.evolution_parameters.max_ticket_types:
             print("Not enough tickets with unique individuals, puffing up with dupes have {0}. Need {1}".format(
@@ -132,7 +135,7 @@ class GameRunner(object):
             workers = multiprocessing.cpu_count()
             chunksize = int(len(playable) / workers)
 
-            if len(playable) == 0:
+            if not playable:
                 print("All tickets suck")
                 self.print_results()
                 print("Early termination")
@@ -150,8 +153,8 @@ class GameRunner(object):
                     pass
                     # raise TypeError("WTF, the house is losing money!")
                 if player.good_game():
-                    self.generations[generation + 1].append(Life(ticket, player.evolutionary_fitness()))
-                    self.report_good_games(i, player, ticket)
+                    self.generations[generation + 1].append(Life(player.ticket, player.evolutionary_fitness()))
+                    self.report_good_games(i, player, player.ticket)
 
             remaining = len(self.generations[generation + 1])
             self.true_winners[generation + 1] = self.generations[generation + 1]
@@ -164,6 +167,9 @@ class GameRunner(object):
 
             upcoming_generation = self.generations[generation + 1]
 
+            if not self.generations[generation + 1]:
+                print("Ran out of good tickets")
+                break
             # TODO: reward better with more slots in next generation
             while len(self.generations[generation + 1]) < self.evolution_parameters.max_ticket_types:
                 print("Puffing up population of tickets-- have {0}, need {1}"
@@ -242,25 +248,29 @@ class GameRunner(object):
         :return:
         """
         histo = {}
-        for winner in self.true_winners[max(self.true_winners.keys())]:
-            if winner in histo.keys():
-                histo[winner] += 1
+        last_generation = max(self.true_winners.keys())
+        for life in self.true_winners[last_generation]:
+            ticket = life.ticket
+            if ticket in histo.keys():
+                histo[ticket] += 1
             else:
-                histo[winner] = 1
+                histo[ticket] = 1
 
+        # sort by fitness
         d_descending = OrderedDict(sorted(histo.items(),
                                           key=lambda x: x[1], reverse=False))
 
         i = 0
-        for winner, occurance in d_descending.items():
+        for winning_ticket, occurance in d_descending.items():
             i += 1
             if i < len(d_descending) - 5:
                 continue
             print("------{0}------".format(occurance))
-            print(winner.ticket)
-            print("Ticket Price: {0}".format(winner.ticket.price()))
-            print("Fitness (net winnigs): {0}".format(winner.fitness))
-            print("Payoff range " + str(self.keno.possible_pay_off_for_ticket_per_game(winner.ticket)))
+            print(winning_ticket)
+            print("Ticket Price: {0}".format(winning_ticket.price()))
+            print("Fitness (net winnigs): {0}".format(winning_ticket.fitness))
+            print("History: {0}".format(winning_ticket.history))
+            print("Payoff range " + str(self.keno.possible_pay_off_for_ticket_per_game(winning_ticket)))
             print("-----")
 
 

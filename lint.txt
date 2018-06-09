@@ -1,9 +1,13 @@
 ************* Module keno.__main__
-C: 16, 4: Variable name "s1" doesn't conform to snake_case naming style (invalid-name)
-C: 20, 4: Variable name "s2" doesn't conform to snake_case naming style (invalid-name)
-C: 24, 4: Variable name "s3" doesn't conform to snake_case naming style (invalid-name)
-W: 20, 4: Unused variable 's2' (unused-variable)
-W: 24, 4: Unused variable 's3' (unused-variable)
+C: 26, 0: Wrong continued indentation (add 2 spaces).
+                  max_plays_with_ticket_type=1000,
+                  ^ | (bad-continuation)
+C: 27, 0: Wrong continued indentation (add 2 spaces).
+                  max_loss=50,
+                  ^ | (bad-continuation)
+C: 28, 0: Wrong continued indentation (add 2 spaces).
+                  sufficient_winnings=10_000)
+                  ^ | (bad-continuation)
 ************* Module keno.biased_rng
 R: 40, 4: Method could be a function (no-self-use)
 C: 58,12: Variable name "x" doesn't conform to snake_case naming style (invalid-name)
@@ -13,58 +17,57 @@ C: 66, 4: Constant name "bday" doesn't conform to UPPER_CASE naming style (inval
 ************* Module keno.evolutionary_parameters
 R:  7, 0: Too few public methods (0/2) (too-few-public-methods)
 ************* Module keno.game
-C: 37, 0: Wrong continued indentation.
+C: 44, 0: Wrong continued indentation.
+            # "constant_numbers": [True, False] # can't really do this!!
+            ^        |       | (bad-continuation)
+C: 54, 0: Wrong continued indentation.
             # "constant_numbers": [True, False] # can't really do this!!
             ^        |             | (bad-continuation)
-C:161, 0: Exactly one space required after assignment
-        self.wv_pay_off_chart ={
-                              ^ (bad-whitespace)
-C:465, 0: Trailing newlines (trailing-newlines)
-C:280, 4: Missing method docstring (missing-docstring)
-C:310, 4: Method name "possible_pay_off_for_ticket_per_game" doesn't conform to snake_case naming style (invalid-name)
-R:346, 4: Method could be a function (no-self-use)
-R:360, 4: Method could be a function (no-self-use)
-R:399, 4: Method could be a function (no-self-use)
+R: 13, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
+C:396, 4: Method name "possible_pay_off_for_ticket_per_game" doesn't conform to snake_case naming style (invalid-name)
+R:432, 4: Method could be a function (no-self-use)
+R:446, 4: Method could be a function (no-self-use)
+R:485, 4: Method could be a function (no-self-use)
 ************* Module keno.game_runner
-W: 41, 0: TODO: Maybe implement Keno of other states. (fixme)
-W: 61, 0: TODO: check minimum winning on 1 ticket!! (fixme)
-W:145, 0: TODO: reward better with more slots in next generation (fixme)
-W: 42, 8: Using the global statement (global-statement)
-R: 76, 4: Too many local variables (22/15) (too-many-locals)
-W: 87, 8: String statement has no effect (pointless-string-statement)
-W:105,24: Unused variable 'fitness' (unused-variable)
-R: 76, 4: Too many branches (14/12) (too-many-branches)
-R: 76, 4: Too many statements (55/50) (too-many-statements)
-R:199, 4: Method could be a function (no-self-use)
+W: 52, 0: TODO: Maybe implement Keno of other states. (fixme)
+W: 72, 0: TODO: check minimum winning on 1 ticket!! (fixme)
+W:173, 0: TODO: reward better with more slots in next generation (fixme)
+C: 22, 0: Missing function docstring (missing-docstring)
+W: 53, 8: Using the global statement (global-statement)
+R: 91, 4: Too many local variables (25/15) (too-many-locals)
+W:102, 8: String statement has no effect (pointless-string-statement)
+R: 91, 4: Too many branches (16/12) (too-many-branches)
+R: 91, 4: Too many statements (60/50) (too-many-statements)
+R:229, 4: Method could be a function (no-self-use)
+C:  9, 0: Imports from package multiprocessing are not grouped (ungrouped-imports)
 ************* Module keno.game_runner_test
 W:  3, 0: TODO: This will haunt me until I write the tests. (fixme)
-C: 38, 0: Final newline missing (missing-final-newline)
 ************* Module keno.number_machine
-W: 11, 0: No exception type(s) specified (bare-except)
-E:  9, 4: Unable to import 'numpy' (import-error)
-W: 43, 8: Unreachable code (unreachable)
-R: 21, 0: Too few public methods (1/2) (too-few-public-methods)
-W: 65, 8: Using the global statement (global-statement)
+W: 12, 0: No exception type(s) specified (bare-except)
+E: 10, 4: Unable to import 'numpy' (import-error)
+W: 44, 8: Unreachable code (unreachable)
+R: 22, 0: Too few public methods (1/2) (too-few-public-methods)
 W: 66, 8: Using the global statement (global-statement)
-W: 97, 4: Using the global statement (global-statement)
-W:124,16: Unused variable 'i' (unused-variable)
+W: 67, 8: Using the global statement (global-statement)
+W: 98, 4: Using the global statement (global-statement)
+C:145, 0: Constant name "skips" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module keno.player
-W: 92, 0: TODO: derived column, gets out of sync? (fixme)
-R:  9, 0: Too many instance attributes (11/7) (too-many-instance-attributes)
-C: 68, 4: Method name "go" doesn't conform to snake_case naming style (invalid-name)
+W:102, 0: TODO: derived column, gets out of sync? (fixme)
+R:  9, 0: Too many instance attributes (12/7) (too-many-instance-attributes)
+C: 72, 4: Method name "go" doesn't conform to snake_case naming style (invalid-name)
 ************* Module keno.player_test
-C: 64, 0: Wrong continued indentation (remove 4 spaces).
+C: 65, 0: Wrong continued indentation (remove 4 spaces).
                                  max_loss=160,
                              |   ^ (bad-continuation)
-C: 65, 0: Wrong continued indentation (remove 4 spaces).
+C: 66, 0: Wrong continued indentation (remove 4 spaces).
                                  sufficient_winnings=2000,
                              |   ^ (bad-continuation)
-C: 66, 0: Wrong continued indentation (remove 4 spaces).
+C: 67, 0: Wrong continued indentation (remove 4 spaces).
                                  max_plays_with_ticket_type=365))
                              |   ^ (bad-continuation)
 C: 14, 4: Variable name "gg" doesn't conform to snake_case naming style (invalid-name)
-C: 35,12: Variable name "gg" doesn't conform to snake_case naming style (invalid-name)
-W: 45, 8: Unused variable 'i' (unused-variable)
+C: 36,12: Variable name "gg" doesn't conform to snake_case naming style (invalid-name)
+W: 46, 8: Unused variable 'i' (unused-variable)
 ************* Module keno.stop_watch
 E: 21, 4: An attribute defined in keno.stop_watch line 14 hides this method (method-hidden)
 R: 26, 4: Method could be a function (no-self-use)
@@ -72,23 +75,24 @@ R: 26, 4: Method could be a function (no-self-use)
 C: 41, 0: Trailing newlines (trailing-newlines)
 R:  6, 0: Too few public methods (0/2) (too-few-public-methods)
 ************* Module keno.ticket
-W:283, 0: TODO: DC & MD have different max ticket/max drawing limits (fixme)
-C:259, 0: Wrong continued indentation (add 4 spaces).
+W:308, 0: TODO: DC & MD have different max ticket/max drawing limits (fixme)
+C:284, 0: Wrong continued indentation (add 4 spaces).
                                                                             value,
                                                                             ^   | (bad-continuation)
-C:260, 0: Wrong continued indentation (add 4 spaces).
+C:285, 0: Wrong continued indentation (add 4 spaces).
                                                                             getattr(ticket, key)))
                                                                             ^   | (bad-continuation)
-R: 13, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
-W: 28, 8: Using the global statement (global-statement)
-W: 45, 8: Access to a protected member _numbers of a client class (protected-access)
-W:162, 8: No exception type(s) specified (bare-except)
-W:194, 8: No exception type(s) specified (bare-except)
-W:242, 8: No exception type(s) specified (bare-except)
+R: 13, 0: Too many instance attributes (10/7) (too-many-instance-attributes)
+W: 31, 8: Using the global statement (global-statement)
+W: 53, 8: Access to a protected member _numbers of a client class (protected-access)
+R:100,12: Boolean expression may be simplified to True (simplify-boolean-expression)
+W:185, 8: No exception type(s) specified (bare-except)
+W:217, 8: No exception type(s) specified (bare-except)
+W:267, 8: No exception type(s) specified (bare-except)
 ************* Module keno.ticket_test
 C: 25, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
 C: 56, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
 
 ------------------------------------------------------------------
-Your code has been rated at 8.96/10 (previous run: 8.96/10, +0.00)
+Your code has been rated at 9.07/10 (previous run: 8.91/10, +0.16)
 

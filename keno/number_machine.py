@@ -122,7 +122,7 @@ def generate_lots_of_numbers():
     if not os.path.isfile(file_name):
         print("Generating lots of numbers to file")
         with open(file_name, "w+") as file:
-            for i in range(0, 100000000):  # 1_000_000):
+            for _ in range(0, 100000000):  # 1_000_000):
                 file.write(str(pick_twenty())+"\n")
     # else:
     #     with open(file_name, "r") as f:
@@ -142,8 +142,9 @@ def generate_lots_of_numbers():
 GENERATOR = cycle(generate_lots_of_numbers())
 
 # fix seeding on multithreading
-skips = random.randint(0,5000)
-for _ in range(0,skips):
+skips = random.randint(0, 5000)
+print("skipping : " + str(skips))
+for _ in range(0, skips):
     next(GENERATOR)
 
 if __name__ == "__main__":

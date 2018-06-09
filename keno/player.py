@@ -29,6 +29,7 @@ class Player(object):
         self.tickets_played = 0
         self.max_tickets_bought = strategy.max_plays_with_ticket_type
         self.history = []
+        self.fitness = 0 # SHOULD BE TICKET PROPRETY!!
         self.history_running_bank = []
         self.md_keno = Keno()
 
@@ -37,6 +38,10 @@ class Player(object):
         Did we hit the goal. Period.
         :return:
         """
+        if self.ticket.to_go and self.net_winnings >= self.stop_at:
+            print(str(self.ticket))
+        self.fitness = self.evolutionary_fitness()
+        self.ticket.fitness = self.fitness
         return self.net_winnings >= self.stop_at
 
     def evolutionary_fitness(self):
@@ -72,6 +77,11 @@ class Player(object):
         """
         if self.ticket is None:
             raise TypeError("ticket not set")
+
+        if self.ticket.history:
+            ticket_history_generation = max(self.ticket.history.keys()) + 1
+        else:
+            ticket_history_generation = 1
         i = 0
         while not self.can_stop_any_time_i_want_to():
             i += 1
@@ -86,6 +96,7 @@ class Player(object):
 
             won = self.md_keno.calculate_payoff_n_drawings(self.ticket)
             self.history.append(won)
+            self.ticket.history.setdefault(ticket_history_generation, []).append(won)
 
             self.winnings += won
 
