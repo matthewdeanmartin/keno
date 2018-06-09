@@ -163,7 +163,8 @@ class GameRunner(object):
             remaining = len(self.generations[generation + 1])
             self.true_winners[generation + 1] = self.generations[generation + 1]
             print("\nRemaining winners: {0}".format(remaining))
-
+            if remaining < 3:
+                self.print_results()
 
             if generation == self.evolution_parameters.max_generations:
                 # don't add mutants, etc to final generation!

@@ -181,6 +181,8 @@ class Ticket(object):
             validator = TicketValidator()
             validator.check_all_prizes_winnable(self)
             validator.check_ticket(self)
+            if not validator.ticket_complies_with_strategy(self, strategy):
+                raise TypeError("Invalid ticket")
             if self.price() > strategy.max_ticket_price:
                 raise TypeError("too big")
             if self.price() < strategy.minimum_ticket_price:
@@ -219,6 +221,8 @@ class Ticket(object):
             validator = TicketValidator()
             validator.check_all_prizes_winnable(self)
             validator.check_ticket(self)
+            if not validator.ticket_complies_with_strategy(self, strategy):
+                raise TypeError("Invalid ticket")
             if self.price() > strategy.max_ticket_price:
                 raise TypeError("too big")
             if self.price() < strategy.minimum_ticket_price:
@@ -263,6 +267,23 @@ class TicketValidator(object):
     def __init__(self):
         self.md_keno = Keno()
 
+    def ticket_complies_with_strategy(self, ticket, strategy):
+        """
+
+        :type ticket: Ticket
+        :type strategy: Strategy
+        :rtype: bool
+        """
+        price = ticket.price()
+        if price > strategy.max_ticket_price:
+            return False
+        if price < strategy.minimum_ticket_price:
+            return False
+        if price > strategy.max_loss:
+            return False
+        # TODO: check if can win the goal.
+        return True
+
     def is_good_ticket(self, ticket):
         """
         Boolean check
@@ -272,6 +293,7 @@ class TicketValidator(object):
         try:
             self.check_ticket(ticket)
             self.check_all_prizes_winnable(ticket)
+
             return True
         except:
             return False
