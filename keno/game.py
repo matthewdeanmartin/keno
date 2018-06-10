@@ -234,6 +234,15 @@ class Keno(object):
                 1: 2
             }
         }
+        # 25.0% federal tax
+        # 8.75% state tax for Maryland residents
+        # 7.5% state tax for non-Maryland residents
+        self.taxes ={
+            "MD":{
+                "limit":5000,
+                "rate" :.25+.087
+            }
+        }
         self.wv_pay_off_chart = {
             10:{
                 10: 100000,
@@ -353,15 +362,17 @@ class Keno(object):
             }
         }
 
-    def pay_off_chart(self, state, to_go):
+    def pay_off_chart(self, ticket):
         """
 
-        :type state: str
-        :type to_go: bool
+        :type ticket: Ticket
         :type: dict[dict[int,float]]
         """
+        state = ticket.state
+        to_go = ticket.to_go
 
         if state == "MD" and not to_go:
+            # wrong place to apply taxes...
             return self.md_pay_off_chart
 
         if state == "MD" and to_go:
@@ -399,7 +410,7 @@ class Keno(object):
         :type ticket: Ticket
         :return:
         """
-        chart = self.pay_off_chart(ticket.state, ticket.to_go)[ticket.spots].copy()
+        chart = self.pay_off_chart(ticket)[ticket.spots].copy()
 
         for key, value in chart.items():
             chart[key] = value * ticket.bet
@@ -505,7 +516,7 @@ class Keno(object):
         # guaranteed some sort of mutliplier
         return 2
 
-    def calculate_payoff_n_drawings(self, ticket):
+    def calculate_payoff_n_drawings(self, ticket, strategy):
         """
         A multi-game ticket, just like in MD.
         :type ticket: Ticket
@@ -519,6 +530,14 @@ class Keno(object):
             if i > ticket.games:
                 raise  TypeError("1 off error")
 
+        # NOW we calculate taxes
+        state = ticket.state
+        prize = so_far
+        if not strategy.evade_taxes:
+            if state == "MD":
+                if prize >= self.taxes[state]["limit"]:
+                    so_far = prize * (1 - self.taxes[state]["rate"])
+
         return so_far
 
     def calculate_payoff_one_drawing(self, state_drawing, ticket):
@@ -528,6 +547,7 @@ class Keno(object):
         :type ticket: Ticket
         :rtype: int
         """
+
         # print(state_drawing, ticket.numbers)
         if not ticket.numbers:
             raise TypeError("uninitialized ticket numbers")
@@ -535,7 +555,7 @@ class Keno(object):
             raise TypeError("wrongly initialized ticket numbers - expected len(n) to match spots")
         matches = self.check_single_winning(ticket.numbers, state_drawing)
         try:
-            winnings = self.pay_off_chart(ticket.state, ticket.to_go)[ticket.spots][len(matches)]
+            winnings = self.pay_off_chart(ticket)[ticket.spots][len(matches)]
         except KeyError:
             return 0
 

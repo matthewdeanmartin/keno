@@ -11,13 +11,16 @@ class Strategy(object):
 
     def __init__(self, state_range, min_ticket_price, max_ticket_price,
                  max_plays_with_ticket_type,
-                 max_loss, sufficient_winnings):
+                 max_loss, sufficient_winnings, evade_taxes):
         """
-        Initialize self
-        :type max_ticket_price: int
+
+        :type state_range: list[str]
+        :type min_ticket_price: float
+        :type max_ticket_price: float
         :type max_plays_with_ticket_type: int
-        :type max_loss: int
-        :type sufficient_winnings: int
+        :type max_loss: float
+        :type sufficient_winnings: float
+        :type evade_taxes: bool
         """
         if max_loss < max_ticket_price:
             raise TypeError("Max loss > max ticket price, you know tickets often end in 0 winnings?")
@@ -41,4 +44,4 @@ class Strategy(object):
         self.scaled_max_bet = 0.0
         # percent of net_winnings (bet more if winning more, bet less if losing/winning les)
 
-
+        self.evade_taxes = True # less than 5000 pay no taxes.

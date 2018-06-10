@@ -21,13 +21,19 @@ class Player(object):
         """
         self.ticket = None
         #self.ticket.randomize_ticket()
+
+        # strategy
         self.max_loss = strategy.max_loss
         self.stop_at = strategy.sufficient_winnings
+        self.max_tickets_bought = strategy.max_plays_with_ticket_type
+        self.strategy = strategy
+
+        # state
         self.winnings = 0
         self.expenses = 0
         self.net_winnings = 0
         self.tickets_played = 0
-        self.max_tickets_bought = strategy.max_plays_with_ticket_type
+
         self.history = []
         self.fitness = 0 # SHOULD BE TICKET PROPRETY!!
         self.history_running_bank = []
@@ -94,7 +100,7 @@ class Player(object):
 
             self.expenses += self.ticket.price()
 
-            won = self.md_keno.calculate_payoff_n_drawings(self.ticket)
+            won = self.md_keno.calculate_payoff_n_drawings(self.ticket, self.strategy)
             self.history.append(won)
             self.ticket.history.setdefault(ticket_history_generation, []).append(won)
 

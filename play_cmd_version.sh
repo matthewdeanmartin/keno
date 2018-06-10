@@ -11,12 +11,11 @@ play_with_all_opts()
 #  --mutation_percent=<mutation_percent>                 How many attributes to mutate each generation [default: 0.2]
 #  --fitness_bonus=<fitness_bonus>                       How many copies of most successful make it to next generation [default: 2]
 #  --max_ticket_types=<max_ticket_types>                 How many individuals (tickets) in initial population [default: 5000]
-
-./play.py keno --max_loss=500 --sufficient_winnings=5000 --max_ticket_price=100 \
+pipenv run ./play.py keno --max_loss=500 --sufficient_winnings=5000 --max_ticket_price=100 \
     --max_plays_with_ticket_type=10000 \
     --max_generations=4 --mutation_percent=0 \
     --fitness_bonus=3 --max_ticket_types=15000
 }
 
 
-./play.py keno --max_loss=500 --sufficient_winnings=5000
+pipenv run ./play.py keno --max_loss=500 --sufficient_winnings=5000

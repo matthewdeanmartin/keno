@@ -5,8 +5,7 @@
 Simulates keno to find the ticket that minimizes the odds gamblers ruin for a given goal and maximum loss. You will still probably lose your money.
 
 Usage:
-  play.py keno [--max_loss=<max_loss> --sufficient_winnings=<sufficient_winnings>] [options]
-  play.py (-h | --help)
+  play.py  [options]
   play.py --version
 
 Options:
@@ -23,40 +22,19 @@ Options:
   --state_range=<state_range>               Comma delimted, e.g. MD or MD,DC [default: MD]
   --evade_taxes=<evade_taxes>               Assume taxes not paid if state doesn't withhold, e.g. small prizes[default: 1]
 """
-from docopt import docopt
+from argopt import argopt
+__version__ = "0.1.0"
 
-from keno.game_runner import GameRunner, Strategy, EvolutionParameters
-from keno.stop_watch import Timer
-
+# gooey doesn't work on mac with venv, it demands to use the global pythonw!
+# and not regular python3!
 from gooey import Gooey
 
 @Gooey
-def run(args):
-    """
-    Set up to keep variables out of global namespace
-    :return:
-    """
-
-    t = Timer()
-    if t is None:
-        raise TypeError("WTF")
-    print(t.start())
-    args_strategy = Strategy(max_ticket_price=float(args["--max_ticket_price"]),
-                             max_plays_with_ticket_type=int(args["--max_plays_with_ticket_type"]),
-                             max_loss=float(args["--max_loss"]),
-                             sufficient_winnings=float(args["--sufficient_winnings"]),
-                             min_ticket_price=float(args["--min_ticket_price"]),
-                             state_range=args["--state_range"].split(","),
-                             evade_taxes=args["--evade_taxes"])
-    runner = GameRunner(args_strategy,
-                        EvolutionParameters(max_generations=int(args["--max_generations"]),
-                                            mutation_percent=float(args["--mutation_percent"]),
-                                            fitness_bonus=int(args["--fitness_bonus"]),
-                                            max_ticket_types=int(args["--max_ticket_types"])))
-    runner.run()
-    print(t.elapsed("Done!"))
-
+def main():
+    # works, but without anything 'fancy'
+    argparser =argopt(__doc__, version=__version__)
+    args = argparser.parse_args()
+    print(args)
 
 if __name__ == '__main__':
-    args = docopt(__doc__, argv=None, help=False, version='Keno 1.0.0', options_first=False)
-    run(args)
+    main()

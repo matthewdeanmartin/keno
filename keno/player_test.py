@@ -19,7 +19,8 @@ def test_three_six_ticket():
                                  max_ticket_price=100,
                                  max_loss=160,
                                  sufficient_winnings=2000,
-                                 max_plays_with_ticket_type=365))
+                                 max_plays_with_ticket_type=365,
+                                 evade_taxes=True))
         ticket = Ticket()
         ticket.randomize_ticket()
         ticket.to_go = False
@@ -52,7 +53,8 @@ def test_player():
                                  max_ticket_price=100,
                                  max_loss=160,
                                  sufficient_winnings=2000,
-                                 max_plays_with_ticket_type=365))
+                                 max_plays_with_ticket_type=365,
+                                 evade_taxes=True))
         ticket = Ticket()
         ticket.randomize_ticket()
         player.ticket = ticket
@@ -71,6 +73,7 @@ def test_player_str():
                              max_ticket_price=100,
                              max_loss=160,
                              sufficient_winnings=2000,
-                             max_plays_with_ticket_type=365))
+                             max_plays_with_ticket_type=365,
+                             evade_taxes=True))
 
     assert str(player) != ""

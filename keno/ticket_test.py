@@ -36,11 +36,12 @@ def test_ticket_validator_mutate():
     Basic call
     """
     strategy = Strategy(state_range=["DC", "MD"],
-             min_ticket_price=0,
-             max_ticket_price=100,
-             max_loss=160,
-             sufficient_winnings=2000,
-             max_plays_with_ticket_type=365)
+                        min_ticket_price=0,
+                        max_ticket_price=100,
+                        max_loss=160,
+                        sufficient_winnings=2000,
+                        max_plays_with_ticket_type=365,
+                        evade_taxes=True)
     ticket = Ticket()
     ticket.randomize_ticket()
     ticket.pick()

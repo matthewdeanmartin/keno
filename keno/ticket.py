@@ -312,8 +312,8 @@ class TicketValidator(object):
         for key, value in self.md_keno.ticket_ranges(ticket.to_go).items():
             if getattr(ticket, key) not in self.md_keno.ticket_ranges(ticket.to_go)[key]:
                 raise TypeError("Bad ticket {0} can be {1}, but got {2}".format(key,
-                                                                            value,
-                                                                            getattr(ticket, key)))
+                                                                                value,
+                                                                                getattr(ticket, key)))
 
         # bonus rules
         if ticket.bonus and ticket.super_bonus:
