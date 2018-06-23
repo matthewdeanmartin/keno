@@ -2,6 +2,7 @@
 """
 Choices gambler makes in a classic gambler's ruin problem
 """
+from typing import List, Union
 
 class Strategy(object):
     """
@@ -9,9 +10,14 @@ class Strategy(object):
     (Not the simulated player's risk tollerances!)
     """
 
-    def __init__(self, state_range, min_ticket_price, max_ticket_price,
-                 max_plays_with_ticket_type,
-                 max_loss, sufficient_winnings, evade_taxes):
+    def __init__(self,
+                 state_range: List[str],
+                 min_ticket_price: Union[int, float],
+                 max_ticket_price: Union[int, float],
+                 max_plays_with_ticket_type: int,
+                 max_loss: Union[int, float],
+                 sufficient_winnings: Union[int, float],
+                 evade_taxes: bool) -> None:
         """
 
         :type state_range: list[str]
@@ -22,7 +28,7 @@ class Strategy(object):
         :type sufficient_winnings: float
         :type evade_taxes: bool
         """
-        if max_loss < max_ticket_price:
+        if float(max_loss) < float(max_ticket_price):
             raise TypeError("Max loss > max ticket price, you know tickets often end in 0 winnings?")
 
         self.state_range = state_range

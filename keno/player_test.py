@@ -7,12 +7,12 @@ from keno.player import Player
 from keno.ticket import Ticket
 
 
-def test_three_six_ticket():
+def test_three_six_ticket() -> None:
     """
     Basic call
     """
     plays = 0
-    gg = 0
+    good_games = 0
     for _ in range(0, 1000):
         player = Player(Strategy(state_range=["DC", "MD"],
                                  min_ticket_price=0,
@@ -37,13 +37,13 @@ def test_three_six_ticket():
         print("winning: " + str(player.history))
         print("bank: " + str(player.history_running_bank))
         if player.good_game():
-            gg += 1
+            good_games += 1
         plays += 1
     print("Percent time good game")
-    print(gg/plays)
+    print(good_games/plays)
 
 
-def test_player():
+def test_player() -> None:
     """
     Basic call
     """
@@ -64,7 +64,7 @@ def test_player():
         print("bank: " + str(player.history_running_bank))
 
 
-def test_player_str():
+def test_player_str() -> None:
     """
     Basic call
     """

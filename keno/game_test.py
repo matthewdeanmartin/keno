@@ -6,7 +6,7 @@ from keno.game import NumbersMachine, Keno
 from keno.number_machine import StaticNumbersMachine
 
 
-def test_static_number_machine():
+def test_static_number_machine() -> None:
     """
     Basic call
     """
@@ -14,7 +14,7 @@ def test_static_number_machine():
     numbers = machine.draw()
     assert len(numbers) == 1
 
-def test_number_machine_twenty():
+def test_number_machine_twenty() -> None:
     """
     Basic call
     """
@@ -22,7 +22,7 @@ def test_number_machine_twenty():
     numbers = machine.draw_no_caching()
     assert len(numbers) == 20
 
-def test_number_machine():
+def test_number_machine() -> None:
     """
     Basic call
     """
@@ -31,7 +31,7 @@ def test_number_machine():
     assert len(numbers) == 1
 
 
-def test_keno():
+def test_keno() -> None:
     """
     Basic call
     """

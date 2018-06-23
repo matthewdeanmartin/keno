@@ -28,3 +28,4 @@ pep257:
 pyflakes:
   disable:
     - F841
+    - F401

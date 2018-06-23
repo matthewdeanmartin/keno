@@ -2,9 +2,9 @@
 """
 Draw numbers...fast.
 """
-# import ast
 import os
 from itertools import cycle
+from typing import List, Iterator
 
 try:
     import numpy as np
@@ -24,7 +24,8 @@ class StaticNumbersMachine(object):
     When playing against another RPG, any number are good as the next
     including static. Right?
     """
-    def __init__(self, spots):
+
+    def __init__(self, spots: int) -> None:
         """
         This maybe could be a Callable or a def.
         :type spots: int
@@ -33,21 +34,22 @@ class StaticNumbersMachine(object):
             raise TypeError("What game is this? {0}".format(spots))
         self.spots = spots
 
-
-    def draw(self):
+    def draw(self) -> List[int]:
         """
         user picks 1 - 10, but lotto draws 20!
         :return:
         """
-        # are the boring numbers as good as any other?
+        # are the boring numbers as good as any other? yes! has no effect on simulations.
         return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][0:self.spots]
+        # this one is random from an unbiased rng
         return [4, 18, 19, 20, 24, 26, 30, 32, 37, 44, 48, 51, 53, 54, 56, 57, 68, 69, 70, 77][0:self.spots]
 
 class NumbersMachine(object):
     """
     Abstract number drawing machine.
     """
-    def __init__(self, spots):
+
+    def __init__(self, spots: int) -> None:
         """
         This maybe could be a Callable or a def.
         :type spots: int
@@ -56,8 +58,7 @@ class NumbersMachine(object):
             raise TypeError("What game is this? {0}".format(spots))
         self.spots = spots
 
-
-    def draw(self):
+    def draw(self) -> List[int]:
         """
         user picks 1 - 10, but lotto draws 20!
         :return:
@@ -71,7 +72,7 @@ class NumbersMachine(object):
         list.sort(drawing)
         return drawing
 
-    def draw_no_caching(self):
+    def draw_no_caching(self) -> List[int]:
         """
         Force machine to draw new numbers, ignore caching possibilities
         :return:
@@ -90,7 +91,7 @@ class NumbersMachine(object):
         return drawing
 
 
-def pick_twenty():
+def pick_twenty() -> List[int]:
     """
     Function version of same code in class
     :return:
@@ -110,7 +111,8 @@ def pick_twenty():
     #list.sort(drawing)
     return drawing
 
-def generate_lots_of_numbers():
+
+def generate_lots_of_numbers() -> Iterator[List[int]]:
     """
     Utility function for creating a cache of a lot of numbers
     :return:
@@ -148,7 +150,7 @@ for _ in range(0, skips):
     next(GENERATOR)
 
 if __name__ == "__main__":
-    def run():
+    def run() -> None:
         """
         Exercise cod
         :return:
@@ -160,7 +162,8 @@ if __name__ == "__main__":
             print(result)
         exit()
 
-    def timings():
+
+    def timings() -> None:
         """
         Exercise code
         :return:

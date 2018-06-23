@@ -5,9 +5,11 @@ All choice that a player makes when buying a ticket.
 Some choices are "sucker's bets" and should not be played.
 """
 import random
+from typing import Dict, Union, List
 
 from keno.game import Keno
 from keno.number_machine import StaticNumbersMachine
+from keno.strategy import Strategy
 
 KENO = Keno()
 class Ticket(object):
@@ -16,16 +18,17 @@ class Ticket(object):
 
     Assumes that the exact numbers are not a real choice, that one set of numbers is as good as the next.
     """
-    def __init__(self):
+
+    def __init__(self) -> None:
         self.to_go = False
         self.spots = -1
         self.games = -1
         self.bet = -1
-        self.bonus = None
-        self.super_bonus = None
-        self.state = None
+        self.bonus = False
+        self.super_bonus = False
+        self.state = ""
 
-        self._numbers = []
+        self._numbers = []  # type: List[int]
 
 
         global KENO
@@ -34,10 +37,10 @@ class Ticket(object):
         # within same 3 mintues!!
         # self.constant_numbers = False
 
-        self.history = {}
+        self.history = {}  # type: Dict[int, List[str]]
         self.fitness = 0
 
-    def copy(self):
+    def copy(self) -> "Ticket":
         """
         Faster than copy/deepcopy
         :return:
@@ -55,7 +58,7 @@ class Ticket(object):
         return copy_ticket
 
     @property
-    def numbers(self):
+    def numbers(self) -> List[int]:
         """
         Make sure this doesn't accidentally get mutated.
         :type: dict[str,list[int|bool]]
@@ -64,7 +67,7 @@ class Ticket(object):
             self.pick()
         return self._numbers
 
-    def pick(self):
+    def pick(self) -> None:
         """
         Generate random numbers, but other strategic decisions.
         :return:
@@ -75,7 +78,7 @@ class Ticket(object):
         self._numbers = machine.draw()
         assert len(self.numbers) == self.spots
 
-    def price(self):
+    def price(self) -> float:
         """
         How much does this ticket cost?
         :rtype: int
@@ -87,7 +90,7 @@ class Ticket(object):
             return base * 3
         return base
 
-    def randomize_ticket(self):
+    def randomize_ticket(self) -> None:
         """
         Randomize self
         :return:
@@ -119,8 +122,7 @@ class Ticket(object):
             if i > 200:
                 raise TypeError("Can't generate a good ticket!")
 
-
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Pretty printer
         :return:
@@ -133,7 +135,7 @@ class Ticket(object):
             result += "\n"
         return result
 
-    def make_save_point(self):
+    def make_save_point(self) -> Dict[str, Union[bool, str, int, float]]:
         """
         Faster than copy/deepcopy
         :return:
@@ -149,7 +151,7 @@ class Ticket(object):
             "state":self.state
         }
 
-    def geneticly_merge_ticket(self, ticket, strategy):
+    def geneticly_merge_ticket(self, ticket: "Ticket", strategy: Strategy) -> None:
         """
         Make this ticket 1/2 like the other ticket
         :type ticket: Ticket
@@ -194,7 +196,7 @@ class Ticket(object):
                 #setattr(self, key, getattr(save_point, key))
                 setattr(self, key, save_point[key])
 
-    def mutate_ticket(self, percent, strategy):
+    def mutate_ticket(self, percent: Union[float, int], strategy: Strategy) -> None:
         """
         Make this ticket change to random property for up to n percent
         :type percent:float
@@ -208,31 +210,38 @@ class Ticket(object):
         mutation_ticket.randomize_ticket()
 
         features = len(self.rules.ticket_ranges(self.to_go))
-        i = 0
-        keys = [x for x in self.rules.ticket_ranges(self.to_go).keys()]
-        random.shuffle(list(keys))
-        for key in keys:
-            i += 1
-            setattr(self, key, getattr(mutation_ticket, key))
-            if i/features > percent:
-                break
-        try:
-            # This mutant valid?
-            validator = TicketValidator()
-            validator.check_all_prizes_winnable(self)
-            validator.check_ticket(self)
-            if not validator.ticket_complies_with_strategy(self, strategy):
-                raise TypeError("Invalid ticket")
-            if self.price() > strategy.max_ticket_price:
-                raise TypeError("too big")
-            if self.price() < strategy.minimum_ticket_price:
-                raise TypeError("too small")
-        except:
-            # undo
-            for key in keys:
-                setattr(self, key, save_point[key])
 
-    def __hash__(self):
+        tries = 0
+        found_one = False
+        while tries < 10 and not found_one:
+            try:
+                i = 0
+                keys = [x for x in self.rules.ticket_ranges(self.to_go).keys()]
+                random.shuffle(list(keys))
+                for key in keys:
+                    i += 1
+                    setattr(self, key, getattr(mutation_ticket, key))
+                    if i / features > percent:
+                        break
+
+                # This mutant valid?
+                validator = TicketValidator()
+                validator.check_all_prizes_winnable(self)
+                validator.check_ticket(self)
+                if not validator.ticket_complies_with_strategy(self, strategy):
+                    raise TypeError("Invalid ticket")
+                if self.price() > strategy.max_ticket_price:
+                    raise TypeError("too big")
+                if self.price() < strategy.minimum_ticket_price:
+                    raise TypeError("too small")
+                found_one = True
+            except:
+                tries += 1
+                # undo
+                for key in keys:
+                    setattr(self, key, save_point[key])
+
+    def __hash__(self) -> int:
         """
         Allow this to be in dictionary for histogram calculations
         :return:
@@ -243,7 +252,8 @@ class Ticket(object):
                                             self.bet,
                                             self.bonus, self.super_bonus,
                                             self.state]))))
-    def __eq__(self, other):
+
+    def __eq__(self, other: "Ticket") -> bool:
         """
         Check equality
         :type other:Ticket
@@ -264,10 +274,10 @@ class TicketValidator(object):
     Check if ticket is valid for MD Keno game
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.md_keno = Keno()
 
-    def ticket_complies_with_strategy(self, ticket, strategy):
+    def ticket_complies_with_strategy(self, ticket: Ticket, strategy: Strategy) -> bool:
         """
 
         :type ticket: Ticket
@@ -284,7 +294,7 @@ class TicketValidator(object):
         # TODO: check if can win the goal.
         return True
 
-    def is_good_ticket(self, ticket):
+    def is_good_ticket(self, ticket: Ticket) -> bool:
         """
         Boolean check
         :type ticket: Ticket
@@ -298,7 +308,7 @@ class TicketValidator(object):
         except:
             return False
 
-    def check_ticket(self, ticket):
+    def check_ticket(self, ticket: Ticket) -> None:
         """
         Throws on bad tickets
         :type ticket: Ticket
@@ -330,7 +340,7 @@ class TicketValidator(object):
         if ticket.super_bonus and ticket.bet * 3 * ticket.games > 300:
             raise TypeError("Too much for this slip ${0}".format(ticket.bet * 3 * ticket.games))
 
-    def check_all_prizes_winnable(self, ticket):
+    def check_all_prizes_winnable(self, ticket: Ticket) -> None:
         """
         Throws on bad tickets
         :type ticket: Ticket

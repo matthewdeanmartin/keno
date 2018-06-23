@@ -108,11 +108,13 @@ def skip_if_no_change(name):
         return wrapper
     return real_decorator
 
-def execute_with_environment(command, env):
-    nose_process = os.subprocess.Popen(command.split(" "), env=env)
-    nose_process.communicate()  # wait
 
 import subprocess
+
+
+def execute_with_environment(command, env):
+    nose_process = subprocess.Popen(command.split(" "), env=env)
+    nose_process.communicate()  # wait
 
 
 def execute_get_text(command):
@@ -181,7 +183,8 @@ def lint():
     num_lines = sum(1 for line in open('lint.txt')
                     if "*************" not in line
                     and "---------------------" not in line
-                    and "Your code has been rated at" not in line)
+                    and "Your code has been rated at" not in line
+                    and "TODO:" not in line)
     if num_lines> 100:
         raise TypeError("Too many lines of lint : {0}".format(num_lines))
 
@@ -210,11 +213,20 @@ def pip_check():
     execute("safety", "check")
     execute("safety", "check", "-r", "requirements_dev.txt")
 
-@task(docs, nose_tests, pip_check, compile, lint)
+@task()
+@skip_if_no_change("compile_md")
+def compile_md():
+    execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
+
+@task(docs, nose_tests, pip_check, compile, lint, compile_md)
 @skip_if_no_change("package")
 def package():
-    execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
     execute("python", "setup.py", "sdist", "--formats=gztar,zip")
+
+@task()
+def type_checking():
+    execute("mypy", *("{0} --ignore-missing-imports --strict".format(PROJECT_NAME).split(" ")))
+
 
 @task()
 def echo(*args, **kwargs):

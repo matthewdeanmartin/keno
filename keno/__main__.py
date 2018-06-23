@@ -3,9 +3,10 @@
 Code to allow launching module directly with python -m keno
 """
 from keno.game_runner import GameRunner, Strategy, EvolutionParameters
-from keno.stop_watch import Timer
+from keno.utility.stop_watch import Timer
 
-def run():
+
+def run() -> None:
     """
     Set up to keep variables out of global namespace
     :return:

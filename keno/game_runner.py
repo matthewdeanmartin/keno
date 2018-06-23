@@ -7,6 +7,7 @@ import sys
 from collections import OrderedDict, namedtuple
 from functools import partial
 from multiprocessing.pool import Pool
+from typing import Tuple, Dict, List
 
 from keno.evolutionary_parameters import EvolutionParameters
 from keno.game import Keno
@@ -16,10 +17,16 @@ from keno.ticket import Ticket
 
 KENO = Keno()
 
-Life = namedtuple('Life', ['ticket', 'fitness'], verbose=False)
+Life = namedtuple('Life', ['ticket', 'fitness'])  # , verbose=False
 
 
-def simulate(ticket, strategy):
+def simulate(ticket: Ticket, strategy: Strategy) -> Tuple[float, int, Player]:
+    """
+
+    :type ticket: Ticket
+    :type strategy: Strategy
+    :return:
+    """
     player = Player(strategy)
     # override ticket
     player.ticket = ticket
@@ -31,7 +38,7 @@ class GameRunner(object):
     Represents top level config for similation
     """
 
-    def __init__(self, strategy, evolution_parameters):
+    def __init__(self, strategy: Strategy, evolution_parameters: EvolutionParameters) -> None:
         """
         Initialize values
         :type strategy: Strategy
@@ -43,17 +50,19 @@ class GameRunner(object):
         self.strategy = strategy
         self.evolution_parameters = evolution_parameters
 
-        self.tickets = []
+        self.tickets = [] # type: List[Ticket]
 
         # Stores each generation
-        self.generations = {}  # generation: ticket
-        self.true_winners = {}  # generation: list(Ticket)
+        #  generation: ticket
+        self.generations = {}  # type: Dict[int,List[Life]]
+        # generation: list(Ticket)
+        self.true_winners = {}  # type: Dict[int,Life]
 
         # TODO: Maybe implement Keno of other states.
         global  KENO
         self.keno = KENO
 
-    def generate_initial_population(self):
+    def generate_initial_population(self) -> None:
         """
         possibly inefficient way of generating all possible tickets.
         I'm not sure how big the total space is.
@@ -92,7 +101,7 @@ class GameRunner(object):
         print("Have {0} tickets. Now ready to play".format(len(self.tickets)))
         sys.stdout.flush()
 
-    def run(self):
+    def run(self) -> None:
         """
         Execute main simulator
         :return:
@@ -102,11 +111,10 @@ class GameRunner(object):
         lives = [Life(t, 0) for t in self.tickets]
         self.generations = {
             0: lives,
-        }
-        """:type: dict[int,list[Life]]"""
+        }  # type : Dict[int, list[Life]]
         self.true_winners = {
             0: lives
-        }
+        }  # type : Dict[int, list[Life]]
         for generation in range(0, self.evolution_parameters.max_generations):
             print("Generation {0}".format(generation))
             # round 2+, iterate winners, not orig tickets
@@ -204,7 +212,7 @@ class GameRunner(object):
 
         self.print_results()
 
-    def cross_and_mutate(self, upcoming_generation):
+    def cross_and_mutate(self, upcoming_generation: List[Life]) -> None:
         """
         Simulate biology
         :type upcoming_generation: list[Life]
@@ -220,7 +228,10 @@ class GameRunner(object):
         print("Mutating Tickets")
         if len(upcoming_generation) > 1000:
             # don't mutate all, mutation is very deadly.
-            for ticket, fitness in upcoming_generation[0:500]:
+            cut_off = int(len(upcoming_generation) * self.evolution_parameters.percent_of_population_to_mutate)
+            if cut_off > len(upcoming_generation):
+                cut_off = len(upcoming_generation)
+            for ticket, fitness in upcoming_generation[0:cut_off]:
                 ticket.mutate_ticket(self.evolution_parameters.mutation_percent, self.strategy)
 
         # children, otherwise pop shrinks too fast
@@ -231,7 +242,7 @@ class GameRunner(object):
 
             upcoming_generation.extend(children)
 
-    def report_good_games(self, i, player, ticket):
+    def report_good_games(self, i: int, player: Player, ticket: Ticket) -> None:
         """
         Diagnostics
         :type i: int
@@ -247,12 +258,12 @@ class GameRunner(object):
         else:
             print('.', end='')
 
-    def print_results(self):
+    def print_results(self) -> None:
         """
         Show best tickets. Ignore worst
         :return:
         """
-        histo = {}
+        histo = {}  # type: Dict[Ticket, int]
         last_generation = max(self.true_winners.keys())
         for life in self.true_winners[last_generation]:
             ticket = life.ticket
@@ -280,7 +291,7 @@ class GameRunner(object):
 
 
 if __name__ == "__main__":
-    def run():
+    def run() -> None:
         """
         Exercise code
         :return:
@@ -291,7 +302,8 @@ if __name__ == "__main__":
 
                                      max_plays_with_ticket_type=200,
                                      max_loss=5000,
-                                     sufficient_winnings=10000),
+                                     sufficient_winnings=10000,
+                                     evade_taxes=True),
                             EvolutionParameters(
                                 max_ticket_types=5000,
                                 max_generations=4,

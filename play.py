@@ -26,7 +26,7 @@ Options:
 from docopt import docopt
 
 from keno.game_runner import GameRunner, Strategy, EvolutionParameters
-from keno.stop_watch import Timer
+from keno.utility.stop_watch import Timer
 
 from gooey import Gooey
 

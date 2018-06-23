@@ -6,8 +6,14 @@ The Keno game, independent of player.
 """
 import random
 from collections import OrderedDict
+from typing import Dict, Union, List, Set
 
 from keno.number_machine import NumbersMachine
+
+
+# CYCLICAL REFS!!
+# from keno.ticket import Ticket
+# from keno.ticket import Strategy
 
 
 class Keno(object):
@@ -16,16 +22,17 @@ class Keno(object):
     """
 
     # @property
-    def ticket_ranges(self, to_go):
+    def ticket_ranges(self, to_go: bool) -> Dict[str, object]:
         """
         Make sure this doesn't accidentally get mutated.
-        :type: dict[str,list[int|bool]]
+        :type to_go: bool
+        :rtype: dict[str,list[int|bool]]
         """
         if to_go:
             return self._to_go_ranges.copy()
         return self._ticket_ranges.copy()
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Set up general parameters that state chose
         """
@@ -55,60 +62,60 @@ class Keno(object):
         }
         self.dc_pay_off_chart = {
             10: {
-                10: 100_000,
-                9: 5_000,
-                8: 500,
-                7: 46,
-                6: 10,
-                5: 2,
-                0: 5
+                10: 100_000.0,
+                9: 5_000.0,
+                8: 500.0,
+                7: 46.0,
+                6: 10.0,
+                5: 2.0,
+                0: 5.0
             },
             9: {
-                9: 20_000,
-                8: 2_000,
-                7: 100,
-                6: 15,
-                5: 5,
-                4: 1,
-                0: 2
+                9: 20_000.0,
+                8: 2_000.0,
+                7: 100.0,
+                6: 15.0,
+                5: 5.0,
+                4: 1.0,
+                0: 2.0
             },
             8: {
-                8: 10_000,
-                7: 500,
-                6: 50,
-                5: 7,
-                4: 1,
-                0: 2
+                8: 10_000.0,
+                7: 500.0,
+                6: 50.0,
+                5: 7.0,
+                4: 1.0,
+                0: 2.0
             },
             7: {
-                7: 1_500,
-                6: 150,
-                5: 20,
-                4: 2,
-                0: 1
+                7: 1_500.0,
+                6: 150.0,
+                5: 20.0,
+                4: 2.0,
+                0: 1.0
             },
             6: {
-                6: 1_500,
-                5: 53,
-                4: 5,
-                3: 1
+                6: 1_500.0,
+                5: 53.0,
+                4: 5.0,
+                3: 1.0
             },
             5: {
-                5: 400,
-                4: 10,
-                3: 3
+                5: 400.0,
+                4: 10.0,
+                3: 3.0
             },
             4: {
-                4: 65,
-                3: 5,
-                2: 1
+                4: 65.0,
+                3: 5.0,
+                2: 1.0
             },
             3: {
-                3: 23,
-                2: 2
+                3: 23.0,
+                2: 2.0
             },
             2: {
-                2: 10
+                2: 10.0
             },
             1: {
                 1: 2.50
@@ -117,44 +124,44 @@ class Keno(object):
         }
         self.md_to_go_pay_off_chart = {
             10: {
-                10: 25_000,
-                9: 1_000,
-                8: 100,
+                10: 25_000.0,
+                9: 1_000.0,
+                8: 100.0,
                 7: 12.50,
                 6: 2.50,
                 5: 0.50,
-                0: 1
+                0: 1.0
             },
             9: {
-                9: 6_250,
-                8: 625,
-                7: 25,
-                6: 5,
+                9: 6_250.0,
+                8: 625.0,
+                7: 25.0,
+                6: 5.0,
                 5: 1.25,
                 0: .50
             },
             8: {
-                8: 2_500,
-                7: 125,
+                8: 2_500.0,
+                7: 125.0,
                 6: 12.50,
                 5: 3.75,
                 4: .50
             },
             7: {
-                7: 625,
-                6: 25,
+                7: 625.0,
+                6: 25.0,
                 5: 3.75,
                 4: .75,
                 3: .25
             },
             6: {
-                6: 250,
+                6: 250.0,
                 5: 12.50,
                 4: 3.75,
                 3: .25
             },
             5: {
-                5: 75,
+                5: 75.0,
                 4: 3.75,
                 3: .50
             },
@@ -177,61 +184,61 @@ class Keno(object):
         self.md_pay_off_chart = {
             # lose 40% in 1 million plays
             10: {
-                10:100000,
-                9:4000,
-                8:400,
-                7:50,
-                6:10,
-                5:2,
-                0:4
+                10: 100000.0,
+                9: 4000.0,
+                8: 400.0,
+                7: 50.0,
+                6: 10.0,
+                5: 2.0,
+                0: 4.0
             },
             9: {
-                9:25000,
-                8:2500,
-                7:100,
-                6:20,
-                5:5,
-                0:2
+                9: 25000.0,
+                8: 2500.0,
+                7: 100.0,
+                6: 20.0,
+                5: 5.0,
+                0: 2.0
             },
             8: {
-                8: 10000,
-                7: 500,
-                6: 50,
-                5: 10,
-                4: 2
+                8: 10000.0,
+                7: 500.0,
+                6: 50.0,
+                5: 10.0,
+                4: 2.0
             },
             7: {
-                7: 2500,
-                6: 100,
-                5: 15,
-                4: 3,
-                3: 1
+                7: 2500.0,
+                6: 100.0,
+                5: 15.0,
+                4: 3.0,
+                3: 1.0
             },
             6: {
-                6: 1000,
-                5: 50,
-                4: 5,
-                3: 1
+                6: 1000.0,
+                5: 50.0,
+                4: 5.0,
+                3: 1.0
             },
             5: {
-                5: 300,
-                4: 15,
-                3: 2
+                5: 300.0,
+                4: 15.0,
+                3: 2.0
             },
             4: {
-                4: 50,
-                3: 5,
-                2: 1
+                4: 50.0,
+                3: 5.0,
+                2: 1.0
             },
             3: {
-                3: 25,
-                2: 2
+                3: 25.0,
+                2: 2.0
             },
             2: {
-                2: 10
+                2: 10.0
             },
             1: {
-                1: 2
+                1: 2.0
             }
         }
         # 25.0% federal tax
@@ -245,124 +252,124 @@ class Keno(object):
         }
         self.wv_pay_off_chart = {
             10:{
-                10: 100000,
-                9: 4000,
-                8: 400,
-                7: 50,
-                6: 10,
-                5: 2,
-                0: 4
+                10: 100000.0,
+                9: 4000.0,
+                8: 400.0,
+                7: 50.0,
+                6: 10.0,
+                5: 2.0,
+                0: 4.0
             },
             9: {
-                9: 25000,
-                8: 2500,
-                7: 200,
-                6: 25,
-                5: 4,
-                0: 2
+                9: 25000.0,
+                8: 2500.0,
+                7: 200.0,
+                6: 25.0,
+                5: 4.0,
+                0: 2.0
             },
             8: {
-                8: 10000,
-                7: 500,
-                6: 50,
-                5: 10,
-                4: 2
+                8: 10000.0,
+                7: 500.0,
+                6: 50.0,
+                5: 10.0,
+                4: 2.0
             },
             7: {
-                7: 2500,
-                6: 125,
-                5: 15,
-                4: 2,
-                3: 1
+                7: 2500.0,
+                6: 125.0,
+                5: 15.0,
+                4: 2.0,
+                3: 1.0
             },
             6: {
-                6: 1500,
-                5: 50,
-                4: 5,
-                3: 1
+                6: 1500.0,
+                5: 50.0,
+                4: 5.0,
+                3: 1.0
             },
             5: {
-                5: 400,
-                4: 15,
-                3: 2
+                5: 400.0,
+                4: 15.0,
+                3: 2.0
             },
             4: {
-                4: 50,
-                3: 5,
-                2: 1
+                4: 50.0,
+                3: 5.0,
+                2: 1.0
             },
             3: {
-                3: 25,
-                2: 2
+                3: 25.0,
+                2: 2.0
             },
             2: {
-                2: 10
+                2: 10.0
             },
             1: {
-                1: 2
+                1: 2.0
             }
         }
         self.oh_pay_off_chart = {
             10: {
-                10: 100_000,
-                9: 5_000,
-                8: 500,
-                7: 50,
-                6: 10,
-                5: 2,
-                0: 5
+                10: 100_000.0,
+                9: 5_000.0,
+                8: 500.0,
+                7: 50.0,
+                6: 10.0,
+                5: 2.0,
+                0: 5.0
             },
             9: {
-                9: 25_000,
-                8: 2_000,
-                7: 100,
-                6: 20,
-                5: 5,
-                0: 2
+                9: 25_000.0,
+                8: 2_000.0,
+                7: 100.0,
+                6: 20.0,
+                5: 5.0,
+                0: 2.0
             },
             8: {
-                8: 10_000,
-                7: 300,
-                6: 50,
-                5: 15,
-                4: 2
+                8: 10_000.0,
+                7: 300.0,
+                6: 50.0,
+                5: 15.0,
+                4: 2.0
             },
             7: {
-                7: 2000,
-                6: 100,
-                5: 11,
-                4: 5,
-                3: 1
+                7: 2000.0,
+                6: 100.0,
+                5: 11.0,
+                4: 5.0,
+                3: 1.0
             },
             6: {
-                6: 1100,
-                5: 57,
-                4: 7,
-                3: 1
+                6: 1100.0,
+                5: 57.0,
+                4: 7.0,
+                3: 1.0
             },
             5: {
-                5: 410,
-                4: 18,
-                3: 2
+                5: 410.0,
+                4: 18.0,
+                3: 2.0
             },
             4: {
-                4: 72,
-                3: 5,
-                2: 1
+                4: 72.0,
+                3: 5.0,
+                2: 1.0
             },
             3: {
-                3: 27,
-                2: 2
+                3: 27.0,
+                2: 2.0
             },
             2: {
-                2: 11
+                2: 11.0
             },
             1: {
-                1: 2
+                1: 2.0
             }
         }
 
-    def pay_off_chart(self, ticket):
+    def pay_off_chart(self, ticket: "Ticket") -> Dict[int, Dict[int, float]]:
         """
 
         :type ticket: Ticket
@@ -387,15 +394,14 @@ class Keno(object):
             return self.wv_pay_off_chart
         raise TypeError("Don't know that state")
 
-
-    def can_i_win_this_much(self, ticket, jackpot):
+    def can_i_win_this_much(self, ticket: "Ticket", jackpot: float) -> bool:
         """
 
         :type ticket: Ticket
-        :type jackpot: int
+        :type jackpot: int|float
         :rtype: bool
         """
-        max_value = 0
+        max_value = 0.0
         for value in self.possible_pay_off_for_ticket_per_game(ticket).values():
             if isinstance(value, (set, list)):
                 for inner_value in value:
@@ -404,7 +410,8 @@ class Keno(object):
                 max_value = max(max_value, value)
         return max_value >= jackpot
 
-    def possible_pay_off_for_ticket_per_game(self, ticket):
+    def possible_pay_off_for_ticket_per_game(self, ticket: "Ticket") -> Dict[
+        int, Union[int, float, List[float]]]:
         """
 
         :type ticket: Ticket
@@ -432,15 +439,16 @@ class Keno(object):
 
         return chart
 
-
-    def state_drawing(self):
+    def state_drawing(self) -> List[int]:
         """
         The numbers drawn by state, the winning numbers
         :type:
         """
         return self.machine.draw()
 
-    def check_single_winning(self, picks, state_drawing):
+    def check_single_winning(self,
+                             picks: Union[List[int], Set[int]],
+                             state_drawing: Union[List[int], Set[int]]) -> Set[int]:
         """
         Which numbers in picks are in state drawing?
         :type picks: list[int]|set[int]
@@ -454,7 +462,7 @@ class Keno(object):
                 matches.add(pick)
         return matches
 
-    def check_for_bonus(self, state):
+    def check_for_bonus(self, state: str) -> int:
         """
         Rule confusing...I think this is determined as a function of drawying and/or user selections
         :rtype: int
@@ -493,7 +501,7 @@ class Keno(object):
         #         return i
         # return 1
 
-    def check_for_super_bonus(self, state):
+    def check_for_super_bonus(self, state: str) -> int:
         """
         Rule confusing...I think this is determined as a function of drawying and/or user selections
         :rtype: int
@@ -511,18 +519,18 @@ class Keno(object):
             20:930.2
         }
         for key, value in odds.items():
-            if random.randint(0, value * 10) < 10:
+            if random.randint(0, int(value * 10)) < 10:
                 return key
         # guaranteed some sort of mutliplier
         return 2
 
-    def calculate_payoff_n_drawings(self, ticket, strategy):
+    def calculate_payoff_n_drawings(self, ticket: "Ticket", strategy: "Strategy") -> float:
         """
         A multi-game ticket, just like in MD.
         :type ticket: Ticket
         :return:
         """
-        so_far = 0
+        so_far = 0.0
         for i in range(0, ticket.games):
             # each game is a new set of numbers.
             state_drawing = self.state_drawing()
@@ -540,7 +548,9 @@ class Keno(object):
 
         return so_far
 
-    def calculate_payoff_one_drawing(self, state_drawing, ticket):
+    def calculate_payoff_one_drawing(self,
+                                     state_drawing: List[int],
+                                     ticket: "Ticket") -> float:
         """
         One drawing, a ticket can conver many drawings
         :type state_drawing: list[int]|set[int]
@@ -555,16 +565,16 @@ class Keno(object):
             raise TypeError("wrongly initialized ticket numbers - expected len(n) to match spots")
         matches = self.check_single_winning(ticket.numbers, state_drawing)
         try:
-            winnings = self.pay_off_chart(ticket)[ticket.spots][len(matches)]
+            winnings = float(self.pay_off_chart(ticket)[ticket.spots][len(matches)])
         except KeyError:
-            return 0
+            return 0.0
 
         if ticket.bonus:
             factor = self.check_for_bonus(ticket.state)
-            return winnings * ticket.bet * factor
+            return float(winnings * ticket.bet * factor)
 
         if ticket.super_bonus:
             factor = self.check_for_super_bonus(ticket.state)
-            return winnings * ticket.bet * factor
+            return float(winnings * ticket.bet * factor)
 
-        return winnings * ticket.bet
+        return float(winnings * ticket.bet)
