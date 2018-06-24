@@ -224,6 +224,7 @@ def package():
     execute("python", "setup.py", "sdist", "--formats=gztar,zip")
 
 @task()
+@skip_if_no_change("type_checking")
 def type_checking():
     execute("mypy", *("{0} --ignore-missing-imports --strict".format(PROJECT_NAME).split(" ")))
 
