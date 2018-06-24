@@ -6,6 +6,7 @@ sphinx
 pylint
 pytest
 pytest-cov
+pandoc
 prospector
 safety
 bumpversion
