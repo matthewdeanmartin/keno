@@ -29,7 +29,7 @@ class Timer(object):
 
     def elapsed(self, message: str = "Elapsed: ") -> str:
         """Time elapsed since start was called"""
-        return message + " " +  str(datetime.datetime.now() - self.start_time)
+        return message + " " + str(datetime.datetime.now() - self.start_time)
 
     def split(self, message: str = "Split started at: ") -> str:
         """Start a split timer"""

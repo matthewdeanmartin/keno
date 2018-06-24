@@ -98,7 +98,6 @@ class Player(object):
             i += 1
             self.tickets_played += 1
 
-
             validator = TicketValidator()
             validator.check_all_prizes_winnable(self.ticket)
             validator.check_ticket(self.ticket)
@@ -115,7 +114,7 @@ class Player(object):
             self.net_winnings = self.winnings - self.expenses
             self.history_running_bank.append(self.net_winnings)
 
-            if i > self.max_tickets_bought+1:
+            if i > self.max_tickets_bought + 1:
                 # This shouldn't happen.
                 raise TypeError("Why so slow?")
         # house stats.

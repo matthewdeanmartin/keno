@@ -1,102 +1,94 @@
 ************* Module keno.biased_rng
 C: 15, 0: Line too long (122/120) (line-too-long)
 C: 26, 0: Line too long (123/120) (line-too-long)
-R: 59, 4: Method could be a function (no-self-use)
-C: 77,12: Variable name "x" doesn't conform to snake_case naming style (invalid-name)
-R: 69, 4: Method could be a function (no-self-use)
-C: 84, 4: Constant name "rng" doesn't conform to UPPER_CASE naming style (invalid-name)
-C: 85, 4: Constant name "bday" doesn't conform to UPPER_CASE naming style (invalid-name)
+R: 60, 4: Method could be a function (no-self-use)
+C: 83,12: Variable name "x" doesn't conform to snake_case naming style (invalid-name)
+R: 70, 4: Method could be a function (no-self-use)
+C: 90, 4: Constant name "rng" doesn't conform to UPPER_CASE naming style (invalid-name)
+C: 91, 4: Constant name "bday" doesn't conform to UPPER_CASE naming style (invalid-name)
 W: 28, 0: Unused Set imported from typing (unused-import)
 ************* Module keno.evolutionary_parameters
-R:  7, 0: Too few public methods (0/2) (too-few-public-methods)
+R:  8, 0: Too few public methods (0/2) (too-few-public-methods)
 W:  5, 0: Unused Union imported from typing (unused-import)
 ************* Module keno.game
-C: 51, 0: Wrong continued indentation.
-            # "constant_numbers": [True, False] # can't really do this!!
-            ^        |       | (bad-continuation)
-C: 61, 0: Wrong continued indentation.
-            # "constant_numbers": [True, False] # can't really do this!!
-            ^        |             | (bad-continuation)
-C:247, 0: Exactly one space required after assignment
-        self.taxes ={
-                   ^ (bad-whitespace)
-C:414, 0: Wrong hanging indentation before block (add 4 spaces).
-        int, Union[int, float, List[float]]]:
-        ^   | (bad-continuation)
 R: 19, 0: Too many instance attributes (9/7) (too-many-instance-attributes)
-C:413, 4: Method name "possible_pay_off_for_ticket_per_game" doesn't conform to snake_case naming style (invalid-name)
-R:449, 4: Method could be a function (no-self-use)
-R:465, 4: Method could be a function (no-self-use)
-R:504, 4: Method could be a function (no-self-use)
+C:178, 4: Method name "possible_pay_off_for_ticket_per_game" doesn't conform to snake_case naming style (invalid-name)
+R:215, 4: Method could be a function (no-self-use)
+R:233, 4: Method could be a function (no-self-use)
+R:270, 4: Method could be a function (no-self-use)
 ************* Module keno.game_runner
-W: 61, 0: TODO: Maybe implement Keno of other states. (fixme)
-W: 81, 0: TODO: check minimum winning on 1 ticket!! (fixme)
-W:186, 0: TODO: reward better with more slots in next generation (fixme)
-W: 62, 8: Using the global statement (global-statement)
-R:104, 4: Too many local variables (25/15) (too-many-locals)
-R:104, 4: Too many branches (17/12) (too-many-branches)
-R:104, 4: Too many statements (61/50) (too-many-statements)
-R:245, 4: Method could be a function (no-self-use)
+W: 64, 0: TODO: Maybe implement Keno of other states. (fixme)
+W: 84, 0: TODO: check minimum winning on 1 ticket!! (fixme)
+W:193, 0: TODO: reward better with more slots in next generation (fixme)
+W: 65, 8: Using the global statement (global-statement)
+R:110, 4: Too many local variables (25/15) (too-many-locals)
+R:110, 4: Too many branches (17/12) (too-many-branches)
+R:110, 4: Too many statements (61/50) (too-many-statements)
+R:268, 4: Method could be a function (no-self-use)
 W: 10, 0: Unused Dict imported from typing (unused-import)
 C:  9, 0: Imports from package multiprocessing are not grouped (ungrouped-imports)
 ************* Module keno.game_runner_test
 W:  3, 0: TODO: This will haunt me until I write the tests. (fixme)
 ************* Module keno.number_machine
-W: 15, 0: No exception type(s) specified (bare-except)
+C:212, 0: Trailing whitespace (trailing-whitespace)
+W: 16, 0: No exception type(s) specified (bare-except)
 E: 13, 4: Unable to import 'numpy' (import-error)
-W: 47, 8: Unreachable code (unreachable)
-R: 24, 0: Too few public methods (1/2) (too-few-public-methods)
-W: 69, 8: Using the global statement (global-statement)
-W: 70, 8: Using the global statement (global-statement)
-W:104, 4: Using the global statement (global-statement)
-C:150, 0: Constant name "is_travis" doesn't conform to UPPER_CASE naming style (invalid-name)
-C:156, 4: Constant name "skips" doesn't conform to UPPER_CASE naming style (invalid-name)
+W: 53, 8: Unreachable code (unreachable)
+R: 28, 0: Too few public methods (1/2) (too-few-public-methods)
+W: 97, 8: Using the global statement (global-statement)
+W: 98, 8: Using the global statement (global-statement)
+W:131, 4: Using the global statement (global-statement)
+C:177, 0: Constant name "is_travis" doesn't conform to UPPER_CASE naming style (invalid-name)
+C:183, 4: Constant name "skips" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module keno.player
-W:114, 0: TODO: derived column, gets out of sync? (fixme)
+W:113, 0: TODO: derived column, gets out of sync? (fixme)
 R: 13, 0: Too many instance attributes (13/7) (too-many-instance-attributes)
 C: 84, 4: Method name "go" doesn't conform to snake_case naming style (invalid-name)
 W:  5, 0: Unused Union imported from typing (unused-import)
 W:  5, 0: Unused List imported from typing (unused-import)
 ************* Module keno.player_test
-W: 50, 8: Unused variable 'i' (unused-variable)
+W: 54, 8: Unused variable 'i' (unused-variable)
 ************* Module keno.showdown
 W: 25, 8: Using a conditional statement with a constant value (using-constant-test)
 W: 38, 4: Unused variable 'diagnostics' (unused-variable)
-C: 70, 4: Function name "go" doesn't conform to snake_case naming style (invalid-name)
-C: 70, 4: Missing function docstring (missing-docstring)
+C: 71, 4: Function name "go" doesn't conform to snake_case naming style (invalid-name)
+C: 71, 4: Missing function docstring (missing-docstring)
 ************* Module keno.strategy
-R:  7, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
-R: 13, 4: Too many arguments (8/5) (too-many-arguments)
-W: 20,17: Unused argument 'evade_taxes' (unused-argument)
-R:  7, 0: Too few public methods (0/2) (too-few-public-methods)
+R:  8, 0: Too many instance attributes (8/7) (too-many-instance-attributes)
+R: 14, 4: Too many arguments (8/5) (too-many-arguments)
+W: 22, 8: Unused argument 'evade_taxes' (unused-argument)
+R:  8, 0: Too few public methods (0/2) (too-few-public-methods)
 ************* Module keno.ticket
-W:294, 0: TODO: check if can win the goal. (fixme)
-W:349, 0: TODO: DC & MD have different max ticket/max drawing limits (fixme)
-R: 15, 0: Too many instance attributes (11/7) (too-many-instance-attributes)
-W: 34, 8: Using the global statement (global-statement)
-W: 57, 8: Access to a protected member _numbers of a client class (protected-access)
-R:104,12: Boolean expression may be simplified to True (simplify-boolean-expression)
+W:308, 0: TODO: check if can win the goal. (fixme)
+W:374, 0: TODO: DC & MD have different max ticket/max drawing limits (fixme)
+R: 17, 0: Too many instance attributes (11/7) (too-many-instance-attributes)
+W: 35, 8: Using the global statement (global-statement)
+W: 58, 8: Access to a protected member _numbers of a client class (protected-access)
+R:105,12: Boolean expression may be simplified to True (simplify-boolean-expression)
 W:193, 8: No exception type(s) specified (bare-except)
 W:238,12: No exception type(s) specified (bare-except)
-R:280, 4: Method could be a function (no-self-use)
-W:308, 8: No exception type(s) specified (bare-except)
+R:294, 4: Method could be a function (no-self-use)
+W:322, 8: No exception type(s) specified (bare-except)
 ************* Module keno.ticket_test
-C: 25, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
-C: 70, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
+C: 27, 0: Function name "test_ticket_validator_is_good_ticket" doesn't conform to snake_case naming style (invalid-name)
+C: 78, 0: Function name "test_ticket_validator_basically_ok" doesn't conform to snake_case naming style (invalid-name)
 ************* Module keno.utility.stop_watch
 R: 26, 4: Method could be a function (no-self-use)
 R:  1, 0: Similar lines in 5 files
-==keno.player_test:17
-==keno.player_test:51
-==keno.player_test:71
-==keno.ticket_test:38
-==keno.ticket_test:54
-                        min_ticket_price=0,
-                        max_ticket_price=100,
-                        max_loss=160,
-                        sufficient_winnings=2000,
-                        max_plays_with_ticket_type=365, (duplicate-code)
+==keno.player_test:18
+==keno.player_test:56
+==keno.player_test:80
+==keno.ticket_test:41
+==keno.ticket_test:60
+        state_range=["DC", "MD"],
+        min_ticket_price=0,
+        max_ticket_price=100,
+        max_loss=160,
+        sufficient_winnings=2000,
+        max_plays_with_ticket_type=365,
+        evade_taxes=True,
+    ) (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.18/10 (previous run: 9.18/10, -0.01)
+Your code has been rated at 9.21/10 (previous run: 8.90/10, +0.31)
 

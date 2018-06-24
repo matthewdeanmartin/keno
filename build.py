@@ -169,7 +169,12 @@ def clean():
 def compile():
     execute("python", "-m", "compileall", PROJECT_NAME)
 
-@task(compile)
+@task()
+@skip_if_no_change("formatting")
+def formatting():
+    execute("black", *("{0}".format(PROJECT_NAME).split(" ")))
+
+@task(compile, formatting)
 @skip_if_no_change("lint")
 def lint():
     # sort of redundant to above...

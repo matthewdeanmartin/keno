@@ -14,13 +14,17 @@ def test_three_six_ticket() -> None:
     plays = 0
     good_games = 0
     for _ in range(0, 1000):
-        player = Player(Strategy(state_range=["DC", "MD"],
-                                 min_ticket_price=0,
-                                 max_ticket_price=100,
-                                 max_loss=160,
-                                 sufficient_winnings=2000,
-                                 max_plays_with_ticket_type=365,
-                                 evade_taxes=True))
+        player = Player(
+            Strategy(
+                state_range=["DC", "MD"],
+                min_ticket_price=0,
+                max_ticket_price=100,
+                max_loss=160,
+                sufficient_winnings=2000,
+                max_plays_with_ticket_type=365,
+                evade_taxes=True,
+            )
+        )
         ticket = Ticket()
         ticket.randomize_ticket()
         ticket.to_go = False
@@ -40,7 +44,7 @@ def test_three_six_ticket() -> None:
             good_games += 1
         plays += 1
     print("Percent time good game")
-    print(good_games/plays)
+    print(good_games / plays)
 
 
 def test_player() -> None:
@@ -48,13 +52,17 @@ def test_player() -> None:
     Basic call
     """
     for i in range(0, 10):
-        player = Player(Strategy(state_range=["DC", "MD"],
-                                 min_ticket_price=0,
-                                 max_ticket_price=100,
-                                 max_loss=160,
-                                 sufficient_winnings=2000,
-                                 max_plays_with_ticket_type=365,
-                                 evade_taxes=True))
+        player = Player(
+            Strategy(
+                state_range=["DC", "MD"],
+                min_ticket_price=0,
+                max_ticket_price=100,
+                max_loss=160,
+                sufficient_winnings=2000,
+                max_plays_with_ticket_type=365,
+                evade_taxes=True,
+            )
+        )
         ticket = Ticket()
         ticket.randomize_ticket()
         player.ticket = ticket
@@ -68,12 +76,16 @@ def test_player_str() -> None:
     """
     Basic call
     """
-    player = Player(Strategy(state_range=["DC", "MD"],
-                             min_ticket_price=0,
-                             max_ticket_price=100,
-                             max_loss=160,
-                             sufficient_winnings=2000,
-                             max_plays_with_ticket_type=365,
-                             evade_taxes=True))
+    player = Player(
+        Strategy(
+            state_range=["DC", "MD"],
+            min_ticket_price=0,
+            max_ticket_price=100,
+            max_loss=160,
+            sufficient_winnings=2000,
+            max_plays_with_ticket_type=365,
+            evade_taxes=True,
+        )
+    )
 
     assert str(player) != ""

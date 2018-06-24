@@ -17,7 +17,7 @@ from keno.ticket import Ticket
 
 KENO = Keno()
 
-Life = namedtuple('Life', ['ticket', 'fitness'])  # , verbose=False
+Life = namedtuple("Life", ["ticket", "fitness"])  # , verbose=False
 
 
 def simulate(ticket: Ticket, strategy: Strategy) -> Tuple[float, int, Player]:
@@ -33,12 +33,15 @@ def simulate(ticket: Ticket, strategy: Strategy) -> Tuple[float, int, Player]:
     house, played = player.go()
     return house, played, player
 
+
 class GameRunner(object):
     """
     Represents top level config for similation
     """
 
-    def __init__(self, strategy: Strategy, evolution_parameters: EvolutionParameters) -> None:
+    def __init__(
+        self, strategy: Strategy, evolution_parameters: EvolutionParameters
+    ) -> None:
         """
         Initialize values
         :type strategy: Strategy
@@ -50,7 +53,7 @@ class GameRunner(object):
         self.strategy = strategy
         self.evolution_parameters = evolution_parameters
 
-        self.tickets = [] # type: List[Ticket]
+        self.tickets = []  # type: List[Ticket]
 
         # Stores each generation
         #  generation: ticket
@@ -59,7 +62,7 @@ class GameRunner(object):
         self.true_winners = {}  # type: Dict[int,Life]
 
         # TODO: Maybe implement Keno of other states.
-        global  KENO
+        global KENO
         self.keno = KENO
 
     def generate_initial_population(self) -> None:
@@ -94,8 +97,11 @@ class GameRunner(object):
             raise TypeError("No possible valid tickets? Something must be wrong.")
 
         while len(self.tickets) < self.evolution_parameters.max_ticket_types:
-            print("Not enough tickets with unique individuals, puffing up with dupes have {0}. Need {1}".format(
-                len(self.tickets), self.evolution_parameters.max_ticket_types))
+            print(
+                "Not enough tickets with unique individuals, puffing up with dupes have {0}. Need {1}".format(
+                    len(self.tickets), self.evolution_parameters.max_ticket_types
+                )
+            )
             self.tickets.extend(self.tickets)
 
         print("Have {0} tickets. Now ready to play".format(len(self.tickets)))
@@ -109,12 +115,8 @@ class GameRunner(object):
         self.generate_initial_population()
 
         lives = [Life(t, 0) for t in self.tickets]
-        self.generations = {
-            0: lives,
-        }  # type : Dict[int, list[Life]]
-        self.true_winners = {
-            0: lives
-        }  # type : Dict[int, list[Life]]
+        self.generations = {0: lives}  # type : Dict[int, list[Life]]
+        self.true_winners = {0: lives}  # type : Dict[int, list[Life]]
         for generation in range(0, self.evolution_parameters.max_generations):
             print("Generation {0}".format(generation))
             # round 2+, iterate winners, not orig tickets
@@ -135,14 +137,15 @@ class GameRunner(object):
                 i += 1
 
                 # need to be able to win 1/2 as much as target in single winning.
-                if not self.keno.can_i_win_this_much(ticket, self.strategy.sufficient_winnings/2):
+                if not self.keno.can_i_win_this_much(
+                    ticket, self.strategy.sufficient_winnings / 2
+                ):
                     # loser ticket.
                     continue
                 if ticket.price() > self.strategy.max_ticket_price:
                     # costs too much now... loser
                     continue
                 playable.append(ticket)
-
 
             workers = multiprocessing.cpu_count()
             chunksize = int(len(playable) / workers)
@@ -154,7 +157,9 @@ class GameRunner(object):
                 break
 
             with Pool(processes=workers) as pool:
-                results = pool.map(partial(simulate, strategy=self.strategy), playable, chunksize)
+                results = pool.map(
+                    partial(simulate, strategy=self.strategy), playable, chunksize
+                )
 
             for house, played, player in results:
                 # this is the fitness function, currently binary (good/not good)
@@ -165,7 +170,9 @@ class GameRunner(object):
                     pass
                     # raise TypeError("WTF, the house is losing money!")
                 if player.good_game():
-                    self.generations[generation + 1].append(Life(player.ticket, player.evolutionary_fitness()))
+                    self.generations[generation + 1].append(
+                        Life(player.ticket, player.evolutionary_fitness())
+                    )
                     self.report_good_games(i, player, player.ticket)
 
             remaining = len(self.generations[generation + 1])
@@ -184,14 +191,24 @@ class GameRunner(object):
                 print("Ran out of good tickets")
                 break
             # TODO: reward better with more slots in next generation
-            while len(self.generations[generation + 1]) < self.evolution_parameters.max_ticket_types:
-                print("Puffing up population of tickets-- have {0}, need {1}"
-                      .format(len(self.generations[generation + 1]),
-                              self.evolution_parameters.max_ticket_types))
+            while (
+                len(self.generations[generation + 1])
+                < self.evolution_parameters.max_ticket_types
+            ):
+                print(
+                    "Puffing up population of tickets-- have {0}, need {1}".format(
+                        len(self.generations[generation + 1]),
+                        self.evolution_parameters.max_ticket_types,
+                    )
+                )
 
                 split_on = int(len(self.generations[generation + 1]) / 2)
-                top = sorted(self.generations[generation + 1], key=lambda x: x.fitness)[0:split_on]
-                bottom = sorted(self.generations[generation + 1], key=lambda x: x.fitness)[split_on:]
+                top = sorted(self.generations[generation + 1], key=lambda x: x.fitness)[
+                    0:split_on
+                ]
+                bottom = sorted(
+                    self.generations[generation + 1], key=lambda x: x.fitness
+                )[split_on:]
                 to_add = []
                 for life in top:
                     # range(0,2) == [0,1]
@@ -222,17 +239,23 @@ class GameRunner(object):
         # merge pairs
         for index in range(0, len(upcoming_generation) - 1, 2):
             # cross tickets & immediately remove overpriced
-            upcoming_generation[index].ticket.geneticly_merge_ticket(upcoming_generation[index + 1].ticket,
-                                                                     self.strategy)
+            upcoming_generation[index].ticket.geneticly_merge_ticket(
+                upcoming_generation[index + 1].ticket, self.strategy
+            )
 
         print("Mutating Tickets")
         if len(upcoming_generation) > 1000:
             # don't mutate all, mutation is very deadly.
-            cut_off = int(len(upcoming_generation) * self.evolution_parameters.percent_of_population_to_mutate)
+            cut_off = int(
+                len(upcoming_generation)
+                * self.evolution_parameters.percent_of_population_to_mutate
+            )
             if cut_off > len(upcoming_generation):
                 cut_off = len(upcoming_generation)
             for ticket, fitness in upcoming_generation[0:cut_off]:
-                ticket.mutate_ticket(self.evolution_parameters.mutation_percent, self.strategy)
+                ticket.mutate_ticket(
+                    self.evolution_parameters.mutation_percent, self.strategy
+                )
 
         # children, otherwise pop shrinks too fast
         if len(upcoming_generation) < len(self.tickets) + 500:
@@ -251,12 +274,14 @@ class GameRunner(object):
         :return:
         """
         if i < 6:
-            print("------Good Game------ paid-{0}, won(net) {1}".format(
-                str(ticket.price() * player.tickets_played),
-                player.net_winnings))
+            print(
+                "------Good Game------ paid-{0}, won(net) {1}".format(
+                    str(ticket.price() * player.tickets_played), player.net_winnings
+                )
+            )
             print(player.history)
         else:
-            print('.', end='')
+            print(".", end="")
 
     def print_results(self) -> None:
         """
@@ -273,8 +298,9 @@ class GameRunner(object):
                 histo[ticket] = 1
 
         # sort by fitness
-        d_descending = OrderedDict(sorted(histo.items(),
-                                          key=lambda x: x[1], reverse=False))
+        d_descending = OrderedDict(
+            sorted(histo.items(), key=lambda x: x[1], reverse=False)
+        )
 
         i = 0
         for winning_ticket, occurance in d_descending.items():
@@ -286,30 +312,37 @@ class GameRunner(object):
             print("Ticket Price: {0}".format(winning_ticket.price()))
             print("Fitness (net winnigs): {0}".format(winning_ticket.fitness))
             print("History: {0}".format(winning_ticket.history))
-            print("Payoff range " + str(self.keno.possible_pay_off_for_ticket_per_game(winning_ticket)))
+            print(
+                "Payoff range "
+                + str(self.keno.possible_pay_off_for_ticket_per_game(winning_ticket))
+            )
             print("-----")
 
 
 if __name__ == "__main__":
+
     def run() -> None:
         """
         Exercise code
         :return:
         """
-        runner = GameRunner(Strategy(state_range=["MD", "DC", "WV", "OH"],
-                                     min_ticket_price=0,
-                                     max_ticket_price=50,
-
-                                     max_plays_with_ticket_type=200,
-                                     max_loss=5000,
-                                     sufficient_winnings=10000,
-                                     evade_taxes=True),
-                            EvolutionParameters(
-                                max_ticket_types=5000,
-                                max_generations=4,
-                                mutation_percent=.2,
-                                fitness_bonus=2))
+        runner = GameRunner(
+            Strategy(
+                state_range=["MD", "DC", "WV", "OH"],
+                min_ticket_price=0,
+                max_ticket_price=50,
+                max_plays_with_ticket_type=200,
+                max_loss=5000,
+                sufficient_winnings=10000,
+                evade_taxes=True,
+            ),
+            EvolutionParameters(
+                max_ticket_types=5000,
+                max_generations=4,
+                mutation_percent=.2,
+                fitness_bonus=2,
+            ),
+        )
         runner.run()
-
 
     run()

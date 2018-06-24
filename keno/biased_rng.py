@@ -40,6 +40,7 @@ class BiasedRng(object):
     If you were playing keno with friends (and not the state), one player could exploit the fact that
     the other is using a BiasedRng.
     """
+
     def __init__(self) -> None:
         pass
 
@@ -48,7 +49,7 @@ class BiasedRng(object):
         Pick number drawn from a biased RNG
         :return:
         """
-        pick = set() # type: Set[int]
+        pick = set()  # type: Set[int]
         while len(pick) < 20:
             birthday = self.random_birthday()
             pick.update(self.keno_range(birthday))
@@ -56,7 +57,7 @@ class BiasedRng(object):
         pick_list.sort()
         return pick_list
 
-    def random_birthday(self)->date:
+    def random_birthday(self) -> date:
         """
         Birthdays for people up to 80 years old.
         :return:
@@ -66,13 +67,18 @@ class BiasedRng(object):
         days_since_random_birthday = random.randint(0, days)
         return oldest_birthday + timedelta(days=days_since_random_birthday)
 
-    def keno_range(self, value: date)->List[int]:
+    def keno_range(self, value: date) -> List[int]:
         """
         Break date into part and return set of parts from 1 to 80
         :param value:
         :return:
         """
-        full_range = {int(str(value.year)[0:2]), int(str(value.year)[2:]), value.day, value.month} - {0}
+        full_range = {
+            int(str(value.year)[0:2]),
+            int(str(value.year)[2:]),
+            value.day,
+            value.month,
+        } - {0}
         pick = set()
         for x in full_range:
             if x <= 80:

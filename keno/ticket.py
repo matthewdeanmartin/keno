@@ -12,6 +12,8 @@ from keno.number_machine import StaticNumbersMachine
 from keno.strategy import Strategy
 
 KENO = Keno()
+
+
 class Ticket(object):
     """
     Represents all the choices you make on a real ticket.
@@ -29,7 +31,6 @@ class Ticket(object):
         self.state = ""
 
         self._numbers = []  # type: List[int]
-
 
         global KENO
         self.rules = KENO
@@ -142,13 +143,13 @@ class Ticket(object):
         """
         return {
             "to_go": self.to_go,
-            "spots" :self.spots,
-            "games":self.games,
-            "bet":self.bet,
-            "bonus":self.bonus,
-            "super_bonus":self.super_bonus,
-            #"_numbers":self.numbers
-            "state":self.state
+            "spots": self.spots,
+            "games": self.games,
+            "bet": self.bet,
+            "bonus": self.bonus,
+            "super_bonus": self.super_bonus,
+            # "_numbers":self.numbers
+            "state": self.state,
         }
 
     def geneticly_merge_ticket(self, ticket: "Ticket", strategy: Strategy) -> None:
@@ -177,7 +178,6 @@ class Ticket(object):
                     else:
                         setattr(self, key, getattr(ticket, key))
 
-
         try:
             # This mutant valid?
             validator = TicketValidator()
@@ -193,7 +193,7 @@ class Ticket(object):
         except:
             # undo
             for key in keys:
-                #setattr(self, key, getattr(save_point, key))
+                # setattr(self, key, getattr(save_point, key))
                 setattr(self, key, save_point[key])
 
     def mutate_ticket(self, percent: Union[float, int], strategy: Strategy) -> None:
@@ -246,12 +246,24 @@ class Ticket(object):
         Allow this to be in dictionary for histogram calculations
         :return:
         """
-        return hash(":".join(list(map(str, [self.to_go,
-                                            self.spots,
-                                            self.games,
-                                            self.bet,
-                                            self.bonus, self.super_bonus,
-                                            self.state]))))
+        return hash(
+            ":".join(
+                list(
+                    map(
+                        str,
+                        [
+                            self.to_go,
+                            self.spots,
+                            self.games,
+                            self.bet,
+                            self.bonus,
+                            self.super_bonus,
+                            self.state,
+                        ],
+                    )
+                )
+            )
+        )
 
     def __eq__(self, other: "Ticket") -> bool:
         """
@@ -260,13 +272,15 @@ class Ticket(object):
         :rtype:bool
         """
         # numbers & rules ignored right now.
-        return self.to_go == other.to_go and \
-               self.spots == other.spots and \
-               self.games == other.games and \
-               self.bet == other.bet and \
-               self.bonus == other.bonus and \
-               self.super_bonus == other.super_bonus and \
-               self.state == other.state
+        return (
+            self.to_go == other.to_go
+            and self.spots == other.spots
+            and self.games == other.games
+            and self.bet == other.bet
+            and self.bonus == other.bonus
+            and self.super_bonus == other.super_bonus
+            and self.state == other.state
+        )
 
 
 class TicketValidator(object):
@@ -320,10 +334,15 @@ class TicketValidator(object):
             raise TypeError("numbers wrongly initialized")
 
         for key, value in self.md_keno.ticket_ranges(ticket.to_go).items():
-            if getattr(ticket, key) not in self.md_keno.ticket_ranges(ticket.to_go)[key]:
-                raise TypeError("Bad ticket {0} can be {1}, but got {2}".format(key,
-                                                                                value,
-                                                                                getattr(ticket, key)))
+            if (
+                getattr(ticket, key)
+                not in self.md_keno.ticket_ranges(ticket.to_go)[key]
+            ):
+                raise TypeError(
+                    "Bad ticket {0} can be {1}, but got {2}".format(
+                        key, value, getattr(ticket, key)
+                    )
+                )
 
         # bonus rules
         if ticket.bonus and ticket.super_bonus:
@@ -334,11 +353,17 @@ class TicketValidator(object):
         # $200 is the maximum Keno wager per playslip when the Bonus option is selected.
         # $300 is the maximum Keno wager per playslip when the Super Bonus option is selected.
         if ticket.bet * ticket.games > 100:
-            raise TypeError("Too much for this slip! ${0}".format(ticket.bet * ticket.games))
+            raise TypeError(
+                "Too much for this slip! ${0}".format(ticket.bet * ticket.games)
+            )
         if ticket.bonus and ticket.bet * 2 * ticket.games > 200:
-            raise TypeError("Too much for this slip! ${0}".format(ticket.bet * 2 * ticket.games))
+            raise TypeError(
+                "Too much for this slip! ${0}".format(ticket.bet * 2 * ticket.games)
+            )
         if ticket.super_bonus and ticket.bet * 3 * ticket.games > 300:
-            raise TypeError("Too much for this slip ${0}".format(ticket.bet * 3 * ticket.games))
+            raise TypeError(
+                "Too much for this slip ${0}".format(ticket.bet * 3 * ticket.games)
+            )
 
     def check_all_prizes_winnable(self, ticket: Ticket) -> None:
         """

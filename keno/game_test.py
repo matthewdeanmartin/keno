@@ -14,6 +14,7 @@ def test_static_number_machine() -> None:
     numbers = machine.draw()
     assert len(numbers) == 1
 
+
 def test_number_machine_twenty() -> None:
     """
     Basic call
@@ -21,6 +22,7 @@ def test_number_machine_twenty() -> None:
     machine = NumbersMachine(20)
     numbers = machine.draw_no_caching()
     assert len(numbers) == 20
+
 
 def test_number_machine() -> None:
     """

@@ -11,15 +11,19 @@ from typing import List, Iterator
 
 try:
     import numpy as np
+
     HAVE_NUMPY = True
 except:
-    print("We don't have numpy, simulation will be slower, but startup time might be a bit faster")
+    print(
+        "We don't have numpy, simulation will be slower, but startup time might be a bit faster"
+    )
     HAVE_NUMPY = False
 
 
 EIGHTY_NUMBERS = list(range(1, 80))
 
 # DRAWING_COUNT = 0
+
 
 class StaticNumbersMachine(object):
     """
@@ -42,9 +46,33 @@ class StaticNumbersMachine(object):
         :return:
         """
         # are the boring numbers as good as any other? yes! has no effect on simulations.
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][0:self.spots]
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][
+            0 : self.spots
+        ]
         # this one is random from an unbiased rng
-        return [4, 18, 19, 20, 24, 26, 30, 32, 37, 44, 48, 51, 53, 54, 56, 57, 68, 69, 70, 77][0:self.spots]
+        return [
+            4,
+            18,
+            19,
+            20,
+            24,
+            26,
+            30,
+            32,
+            37,
+            44,
+            48,
+            51,
+            53,
+            54,
+            56,
+            57,
+            68,
+            69,
+            70,
+            77,
+        ][0 : self.spots]
+
 
 class NumbersMachine(object):
     """
@@ -73,7 +101,7 @@ class NumbersMachine(object):
         else:
             drawing = next(GENERATOR)
         # shave down to numbers we need.
-        drawing = drawing[0:self.spots]
+        drawing = drawing[0 : self.spots]
         list.sort(drawing)
         return drawing
 
@@ -90,8 +118,7 @@ class NumbersMachine(object):
             # faster
             np.random.shuffle(EIGHTY_NUMBERS)
 
-
-        drawing = EIGHTY_NUMBERS[0:self.spots]
+        drawing = EIGHTY_NUMBERS[0 : self.spots]
         list.sort(drawing)
         return drawing
 
@@ -113,7 +140,7 @@ def pick_twenty() -> List[int]:
 
     drawing = EIGHTY_NUMBERS[0:20]
     # MUST NOT SORT!!!
-    #list.sort(drawing)
+    # list.sort(drawing)
     return drawing
 
 
@@ -130,24 +157,24 @@ def generate_lots_of_numbers() -> Iterator[List[int]]:
         print("Generating lots of numbers to file")
         with open(file_name, "w+") as file:
             for _ in range(0, 100000000):  # 1_000_000):
-                file.write(str(pick_twenty())+"\n")
+                file.write(str(pick_twenty()) + "\n")
     # else:
     #     with open(file_name, "r") as f:
     #         print("have {0} pre-generated numbers".format(len(f.readlines())))
 
     with open(file_name, "r") as file:
         for row in file:
-            #yield ast.literal_eval(row) # 10.52
-            #yield eval(row) # 9.6
-            #yield [x for x in map(int,row.replace("[","").replace("]","").split(","))] # 6.86, 6.42, 6.11, 6.29
+            # yield ast.literal_eval(row) # 10.52
+            # yield eval(row) # 9.6
+            # yield [x for x in map(int,row.replace("[","").replace("]","").split(","))] # 6.86, 6.42, 6.11, 6.29
             try:
-                value = [x for x in map(int, row[1:len(row) - 2].split(","))]
+                value = [x for x in map(int, row[1 : len(row) - 2].split(","))]
             except ValueError:
                 continue
-            yield value # 6.2, 6.05, 6.23, 6.38, 5.74
+            yield value  # 6.2, 6.05, 6.23, 6.38, 5.74
 
 
-is_travis = 'TRAVIS' in os.environ
+is_travis = "TRAVIS" in os.environ
 if is_travis:
     GENERATOR = None
 else:
@@ -159,6 +186,7 @@ else:
         next(GENERATOR)
 
 if __name__ == "__main__":
+
     def run() -> None:
         """
         Exercise cod
@@ -171,16 +199,19 @@ if __name__ == "__main__":
             print(result)
         exit()
 
-
     def timings() -> None:
         """
         Exercise code
         :return:
         """
         import timeit
-        result = timeit.timeit("""import keno.number_machine as k
+
+        result = timeit.timeit(
+            """import keno.number_machine as k
     i = 1
     while i <100000: 
         i += 1
-        next(k.generate_lots_of_numbers())""", number=1)
+        next(k.generate_lots_of_numbers())""",
+            number=1,
+        )
         print(result)

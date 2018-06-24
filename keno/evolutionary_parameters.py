@@ -4,15 +4,19 @@ How to do the genetic algo
 """
 from typing import Union
 
+
 class EvolutionParameters(object):
     """
     How will the game of evolution work
     """
 
-    def __init__(self, max_ticket_types: int,
-                 max_generations: int,
-                 mutation_percent: float,
-                 fitness_bonus: int) -> None:
+    def __init__(
+        self,
+        max_ticket_types: int,
+        max_generations: int,
+        mutation_percent: float,
+        fitness_bonus: int,
+    ) -> None:
         """
         Initialize self
         :type max_ticket_types: int

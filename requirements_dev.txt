@@ -12,3 +12,4 @@ safety
 bumpversion
 semantic_version
 checksumdir
+black

@@ -67,14 +67,17 @@ def showdown(first: Ticket, second: Ticket, strategy: Strategy) -> None:
 
 
 if __name__ == "__main__":
+
     def go() -> None:
-        strategy = Strategy(state_range=["MD"],
-                            min_ticket_price=14,
-                            max_ticket_price=16,
-                            max_plays_with_ticket_type=5000,  # defense against infinite loops?
-                            max_loss=250,
-                            sufficient_winnings=2500,
-                            evade_taxes=True)
+        strategy = Strategy(
+            state_range=["MD"],
+            min_ticket_price=14,
+            max_ticket_price=16,
+            max_plays_with_ticket_type=5000,  # defense against infinite loops?
+            max_loss=250,
+            sufficient_winnings=2500,
+            evade_taxes=True,
+        )
         first = Ticket()
         first.bet = 5
         first.spots = 5
@@ -105,6 +108,5 @@ if __name__ == "__main__":
         second.to_go = False
 
         showdown(first, second, strategy)
-
 
     go()
