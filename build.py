@@ -23,6 +23,7 @@ from pyntcontrib import *
 
 
 PROJECT_NAME = "keno"
+IS_TRAVIS = 'TRAVIS' in os.environ
 
 from semantic_version import Version
 import bumpversion
@@ -216,6 +217,9 @@ def pip_check():
 @task()
 @skip_if_no_change("compile_md")
 def compile_md():
+    # if IS_TRAVIS:
+    #     # pandoc doesn't appear to work on travis for python
+    #     return
     execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
 
 @task(docs, nose_tests, pip_check, compile, lint, compile_md)
