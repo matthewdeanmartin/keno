@@ -42,14 +42,15 @@ C:  9, 0: Imports from package multiprocessing are not grouped (ungrouped-import
 ************* Module keno.game_runner_test
 W:  3, 0: TODO: This will haunt me until I write the tests. (fixme)
 ************* Module keno.number_machine
-W: 12, 0: No exception type(s) specified (bare-except)
-E: 10, 4: Unable to import 'numpy' (import-error)
-W: 45, 8: Unreachable code (unreachable)
-R: 22, 0: Too few public methods (1/2) (too-few-public-methods)
-W: 67, 8: Using the global statement (global-statement)
-W: 68, 8: Using the global statement (global-statement)
-W: 99, 4: Using the global statement (global-statement)
-C:147, 0: Constant name "skips" doesn't conform to UPPER_CASE naming style (invalid-name)
+W: 15, 0: No exception type(s) specified (bare-except)
+E: 13, 4: Unable to import 'numpy' (import-error)
+W: 47, 8: Unreachable code (unreachable)
+R: 24, 0: Too few public methods (1/2) (too-few-public-methods)
+W: 69, 8: Using the global statement (global-statement)
+W: 70, 8: Using the global statement (global-statement)
+W:104, 4: Using the global statement (global-statement)
+C:150, 0: Constant name "is_travis" doesn't conform to UPPER_CASE naming style (invalid-name)
+C:156, 4: Constant name "skips" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module keno.player
 W:114, 0: TODO: derived column, gets out of sync? (fixme)
 R: 13, 0: Too many instance attributes (13/7) (too-many-instance-attributes)
@@ -90,12 +91,12 @@ R:  1, 0: Similar lines in 5 files
 ==keno.player_test:71
 ==keno.ticket_test:38
 ==keno.ticket_test:54
-                             min_ticket_price=0,
-                             max_ticket_price=100,
-                             max_loss=160,
-                             sufficient_winnings=2000,
-                             max_plays_with_ticket_type=365, (duplicate-code)
+                        min_ticket_price=0,
+                        max_ticket_price=100,
+                        max_loss=160,
+                        sufficient_winnings=2000,
+                        max_plays_with_ticket_type=365, (duplicate-code)
 
 ------------------------------------------------------------------
-Your code has been rated at 9.18/10 (previous run: 9.18/10, +0.00)
+Your code has been rated at 9.18/10 (previous run: 9.18/10, -0.01)
 
