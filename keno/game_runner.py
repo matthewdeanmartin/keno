@@ -57,9 +57,10 @@ class GameRunner(object):
 
         # Stores each generation
         #  generation: ticket
-        self.generations = {}  # type: Dict[int,List[Life]]
+        self.generations: Dict[int, List[Life]] = {}
         # generation: list(Ticket)
-        self.true_winners = {}  # type: Dict[int,Life]
+        self.true_winners: Dict[int, Life] = {}
+        # 1000
 
         # TODO: Maybe implement Keno of other states.
         global KENO
@@ -137,7 +138,7 @@ class GameRunner(object):
                 i += 1
 
                 # need to be able to win 1/2 as much as target in single winning.
-                if not self.keno.can_i_win_this_much(
+                if not ticket.can_i_win_this_much(
                     ticket, self.strategy.sufficient_winnings / 2
                 ):
                     # loser ticket.
@@ -267,12 +268,13 @@ class GameRunner(object):
 
     def report_good_games(self, i: int, player: Player, ticket: Ticket) -> None:
         """
-        Diagnostics
-        :type i: int
-        :type player: Player
-        :type ticket: Ticket
+
+        :param i:
+        :param player:
+        :param ticket:
         :return:
         """
+
         if i < 6:
             print(
                 "------Good Game------ paid-{0}, won(net) {1}".format(
@@ -314,7 +316,9 @@ class GameRunner(object):
             print("History: {0}".format(winning_ticket.history))
             print(
                 "Payoff range "
-                + str(self.keno.possible_pay_off_for_ticket_per_game(winning_ticket))
+                + str(
+                    winning_ticket.possible_pay_off_for_ticket_per_game(winning_ticket)
+                )
             )
             print("-----")
 

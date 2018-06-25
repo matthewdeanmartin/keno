@@ -104,7 +104,7 @@ class Player(object):
 
             self.expenses += self.ticket.price()
 
-            won = self.md_keno.calculate_payoff_n_drawings(self.ticket, self.strategy)
+            won = self.ticket.calculate_payoff_n_drawings(self.ticket, self.strategy)
             self.history.append(won)
             self.ticket.history.setdefault(ticket_history_generation, []).append(won)
 

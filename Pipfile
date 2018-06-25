@@ -15,6 +15,7 @@ sphinx = "*"
 safety = "*"
 pbr = "*"
 black = "*"
+detect-secrets = "*"
 
 [packages]
 docopt = "*"

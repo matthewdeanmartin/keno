@@ -5,7 +5,8 @@ All choice that a player makes when buying a ticket.
 Some choices are "sucker's bets" and should not be played.
 """
 import random
-from typing import Dict, Union, List
+from collections import OrderedDict
+from typing import Dict, Union, List, Set
 
 from keno.game import Keno
 from keno.number_machine import StaticNumbersMachine
@@ -281,6 +282,205 @@ class Ticket(object):
             and self.super_bonus == other.super_bonus
             and self.state == other.state
         )
+
+    def calculate_payoff_n_drawings(
+        self, ticket: "Ticket", strategy: "Strategy"
+    ) -> float:
+        """
+        A multi-game ticket, just like in MD.
+        :type ticket: Ticket
+        :return:
+        """
+        so_far = 0.0
+        for i in range(0, ticket.games):
+            # each game is a new set of numbers.
+            state_drawing = self.rules.state_drawing()
+            so_far += self.calculate_payoff_one_drawing(state_drawing, ticket)
+            if i > ticket.games:
+                raise TypeError("1 off error")
+
+        # NOW we calculate taxes
+        state = ticket.state
+        prize = so_far
+        if not strategy.evade_taxes:
+            if state == "MD":
+                if prize >= self.rules.taxes[state]["limit"]:
+                    so_far = prize * (1 - self.rules.taxes[state]["rate"])
+
+        return so_far
+
+    def calculate_payoff_one_drawing(
+        self, state_drawing: List[int], ticket: "Ticket"
+    ) -> float:
+        """
+        One drawing, a ticket can conver many drawings
+        :type state_drawing: list[int]|set[int]
+        :type ticket: Ticket
+        :rtype: int
+        """
+
+        # print(state_drawing, ticket.numbers)
+        if not ticket.numbers:
+            raise TypeError("uninitialized ticket numbers")
+        if len(ticket.numbers) != ticket.spots:
+            raise TypeError(
+                "wrongly initialized ticket numbers - expected len(n) to match spots"
+            )
+        matches = self.check_single_winning(ticket.numbers, state_drawing)
+        try:
+            winnings = float(self.pay_off_chart(ticket)[ticket.spots][len(matches)])
+        except KeyError:
+            return 0.0
+
+        if ticket.bonus:
+            factor = self.check_for_bonus(ticket.state)
+            return float(winnings * ticket.bet * factor)
+
+        if ticket.super_bonus:
+            factor = self.check_for_super_bonus(ticket.state)
+            return float(winnings * ticket.bet * factor)
+
+        return float(winnings * ticket.bet)
+
+    def check_single_winning(
+        self,
+        picks: Union[List[int], Set[int]],
+        state_drawing: Union[List[int], Set[int]],
+    ) -> Set[int]:
+        """
+        Which numbers in picks are in state drawing?
+        :type picks: list[int]|set[int]
+        :type state_drawing: list[int]|set[int]
+        :rtype: set[int]
+        """
+        matches = set()
+        # list.sort(picks)
+        for pick in picks:
+            if pick in state_drawing:
+                matches.add(pick)
+        return matches
+
+    def check_for_bonus(self, state: str) -> int:
+        """
+        Rule confusing...I think this is determined as a function of drawying and/or user selections
+        :rtype: int
+        """
+
+        if state == "DC":
+            cummulative_prob = OrderedDict(
+                [
+                    (1, 0.4008703648066716),
+                    (2, 0.8255574067498794),
+                    (3, 0.887489871539253),
+                    (4, 0.950046886807054),
+                    (5, 0.9876309871721337),
+                    (10, 0.9999981791531241),
+                ]
+            )
+            spin = random.uniform(0, 1)
+            for key, value in cummulative_prob.items():
+                if value < spin:
+                    return key
+            return 1
+
+        if state == "MD":
+            md_odds = {3: 3, 4: 15, 5: 40, 10: 250}
+            for key, value in md_odds.items():
+                if random.randint(0, value * 10) < 10:
+                    return key
+            # guaranteed some sort of mutliplier
+            return 1
+        raise TypeError("Don't know this state")
+        # wrong
+        # for i in [10, 5, 4, 3]:
+        #     if i in ten_numbers:
+        #         return i
+        # return 1
+
+    def check_for_super_bonus(self, state: str) -> int:
+        """
+        Rule confusing...I think this is determined as a function of drawying and/or user selections
+        :rtype: int
+        """
+        if state in ("DC", "WV", "OH"):
+            return 1
+        odds = {2: 2.4, 3: 7.1, 4: 3.9, 5: 7.4, 6: 28.2, 10: 160, 12: 310.1, 20: 930.2}
+        for key, value in odds.items():
+            if random.randint(0, int(value * 10)) < 10:
+                return key
+        # guaranteed some sort of mutliplier
+        return 2
+
+    def can_i_win_this_much(self, ticket: "Ticket", jackpot: float) -> bool:
+        """
+
+        :type ticket: Ticket
+        :type jackpot: int|float
+        :rtype: bool
+        """
+        max_value = 0.0
+        for value in self.possible_pay_off_for_ticket_per_game(ticket).values():
+            if isinstance(value, (set, list)):
+                for inner_value in value:
+                    max_value = max(max_value, inner_value)
+            else:
+                max_value = max(max_value, value)
+        return max_value >= jackpot
+
+    def possible_pay_off_for_ticket_per_game(
+        self, ticket: "Ticket"
+    ) -> Dict[int, Union[int, float, List[float]]]:
+        """
+
+        :type ticket: Ticket
+        :return:
+        """
+        chart = self.pay_off_chart(ticket)[ticket.spots].copy()
+
+        for key, value in chart.items():
+            chart[key] = value * ticket.bet
+
+        if ticket.bonus:
+            for key, value in chart.items():
+                multipliers = [10, 5, 4, 3]
+                totals = set()
+                for multiplier in multipliers:
+                    totals.add(multiplier * chart[key])
+                chart[key] = totals
+        elif ticket.super_bonus:
+            for key, value in chart.items():
+                multipliers = [20, 12, 10, 6, 5, 4, 3, 2]
+                totals = set()
+                for multiplier in multipliers:
+                    totals.add(multiplier * chart[key])
+                chart[key] = totals
+
+        return chart
+
+    def pay_off_chart(self, ticket: "Ticket") -> Dict[int, Dict[int, float]]:
+        """
+
+        :type ticket: Ticket
+        :type: dict[dict[int,float]]
+        """
+        state = ticket.state
+        to_go = ticket.to_go
+
+        if state == "MD" and not to_go:
+            # wrong place to apply taxes...
+            return self.rules.md_pay_off_chart
+
+        if state == "MD" and to_go:
+            return self.rules.md_to_go_pay_off_chart
+
+        if state == "DC":
+            return self.rules.dc_pay_off_chart
+
+        if state == "WV":
+            return self.rules.wv_pay_off_chart
+        if state == "OH":
+            return self.rules.wv_pay_off_chart
+        raise TypeError("Don't know that state")
 
 
 class TicketValidator(object):

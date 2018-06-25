@@ -18,7 +18,6 @@ Loading packages is often surprsing.
 #
 # from pynt_extras import *
 
-from pynt import task
 from pyntcontrib import *
 
 
@@ -26,8 +25,6 @@ PROJECT_NAME = "keno"
 IS_TRAVIS = 'TRAVIS' in os.environ
 
 from semantic_version import Version
-import bumpversion
-
 
 # coding=utf-8
 """
@@ -185,12 +182,23 @@ def lint():
               .split(" ")))
 
     execute("./run_pylint.sh")
-
-    num_lines = sum(1 for line in open('lint.txt')
+    lint_file_name = "lint.txt"
+    num_lines = sum(1 for line in open(lint_file_name)
                     if "*************" not in line
                     and "---------------------" not in line
                     and "Your code has been rated at" not in line
                     and "TODO:" not in line)
+
+    fatal_errors = sum(1 for line in open(lint_file_name)
+                       if "no-member" in line)
+
+    if fatal_errors > 0:
+        for line in open(lint_file_name):
+            if "no-member" in line:
+                print(line)
+
+        raise TypeError("Fatal lint errors : {0}".format(fatal_errors))
+
     if num_lines> 100:
         raise TypeError("Too many lines of lint : {0}".format(num_lines))
 
@@ -233,10 +241,18 @@ def package():
     execute("python", "setup.py", "sdist", "--formats=gztar,zip")
 
 @task()
-@skip_if_no_change("type_checking")
-def type_checking():
+@skip_if_no_change("mypy")
+def mypy():
     execute("mypy", *("{0} --ignore-missing-imports --strict".format(PROJECT_NAME).split(" ")))
 
+
+@task()
+def detect_secrets():
+    # use
+    # blah blah = "foo"     # pragma: whitelist secret
+    # to ignore a false posites
+    command = "detect-secrets --scan --base64-limit 3.5"
+    # TODO Check if output is different from baseline.
 
 @task()
 def echo(*args, **kwargs):
@@ -250,5 +266,4 @@ def echo(*args, **kwargs):
 # __DEFAULT__ is an optional member
 
 __DEFAULT__ = echo
-
 
