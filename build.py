@@ -18,6 +18,7 @@ Loading packages is often surprsing.
 #
 # from pynt_extras import *
 
+import json
 from pyntcontrib import *
 
 
@@ -252,7 +253,22 @@ def detect_secrets():
     # blah blah = "foo"     # pragma: whitelist secret
     # to ignore a false posites
     command = "detect-secrets --scan --base64-limit 3.5"
-    # TODO Check if output is different from baseline.
+    bash_process = subprocess.Popen(command.split(" "),
+                                    # shell=True,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE
+                                    )
+    out, err = bash_process.communicate()  # wait
+    errors_file = "detect-secrets-results.txt"
+    with open(errors_file, "w+") as file_handle:
+        file_handle.write(out.decode())
+
+    with open(errors_file) as f:
+        data = json.load(f)
+    if data["results"]:
+        for result in data["results"]:
+            print(result)
+        raise TypeError("detect-secrets has discovered high entropy strings, possibly passwords?")
 
 @task()
 def echo(*args, **kwargs):
