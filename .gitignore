@@ -111,3 +111,6 @@ keno/numbers.txt
 docs/source/_static/
 docs/source/_templates/
 \.build_state/
+.secrets.baseline
+lint.txt
+.mypy_cache
