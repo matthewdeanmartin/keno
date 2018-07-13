@@ -22,12 +22,16 @@ import json
 from pyntcontrib import *
 
 
+
+
 PROJECT_NAME = "keno"
 IS_TRAVIS = 'TRAVIS' in os.environ
 if IS_TRAVIS:
     PIPENV = ""
 else:
     PIPENV = "pipenv run"
+# generic for multi-targeting
+PYTHON = "python" 
 LIBS = ""
 
 from semantic_version import Version
@@ -249,7 +253,11 @@ def compile_md():
 @task()
 @skip_if_no_change("mypy")
 def mypy():
-    command = "{0} mypy {1} --ignore-missing-imports --strict".format(PIPENV, PROJECT_NAME).strip()
+    if IS_TRAVIS:
+        command = "{0} mypy {1} --ignore-missing-imports --strict".format(PIPENV, PROJECT_NAME).strip()
+    else:
+        command = "{0} -m mypy {1} --ignore-missing-imports --strict".format(PYTHON, PROJECT_NAME).strip()
+
     env = config_pythonpath()
     bash_process = subprocess.Popen(command.split(" "),
                                     stdout=subprocess.PIPE,
