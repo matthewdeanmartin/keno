@@ -28,6 +28,7 @@ if IS_TRAVIS:
     PIPENV = ""
 else:
     PIPENV = "pipenv run"
+LIBS = []
 
 from semantic_version import Version
 
@@ -113,6 +114,7 @@ def skip_if_no_change(name):
 
 
 import subprocess
+
 
 
 def execute_with_environment(command, env):
@@ -248,9 +250,11 @@ def compile_md():
 @skip_if_no_change("mypy")
 def mypy():
     command = "{0} mypy {1} --ignore-missing-imports --strict".format(PIPENV, PROJECT_NAME).strip()
+    env = config_pythonpath()
     bash_process = subprocess.Popen(command.split(" "),
                                     stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE
+                                    stderr=subprocess.PIPE,
+                                    env=env
                                     )
     out, err = bash_process.communicate()  # wait
     errors_file_name ="mypy_errors.txt"
@@ -296,6 +300,13 @@ def detect_secrets():
             print(result)
         raise TypeError("detect-secrets has discovered high entropy strings, possibly passwords?")
 
+
+def config_pythonpath():
+    my_env = {**os.environ}
+    my_env["PYTHONPATH"] = my_env.get("PYTHONPATH",
+                                      "") + LIBS
+    print(my_env["PYTHONPATH"])
+    return my_env
 
 @task(mypy, detect_secrets, pin_dependencies, docs, nose_tests, pip_check, compile, lint, compile_md)
 @skip_if_no_change("package")
