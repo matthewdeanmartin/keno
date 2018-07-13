@@ -254,9 +254,9 @@ def compile_md():
 @skip_if_no_change("mypy")
 def mypy():
     if IS_TRAVIS:
-        command = "{0} mypy {1} --ignore-missing-imports --strict".format(PIPENV, PROJECT_NAME).strip()
-    else:
         command = "{0} -m mypy {1} --ignore-missing-imports --strict".format(PYTHON, PROJECT_NAME).strip()
+    else:
+        command = "{0} mypy {1} --ignore-missing-imports --strict".format(PIPENV, PROJECT_NAME).strip()
 
     env = config_pythonpath()
     bash_process = subprocess.Popen(command.split(" "),
