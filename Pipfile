@@ -15,9 +15,9 @@ sphinx = "*"
 safety = "*"
 pbr = "*"
 black = "*"
-detect-secrets = "*"
 mypy = "*"
 pipenv-to-requirements = "*"
+detect-secrets = "*"
 
 [packages]
 docopt = "*"
