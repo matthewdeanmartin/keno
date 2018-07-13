@@ -21,8 +21,6 @@ pipenv-to-requirements = "*"
 
 [packages]
 docopt = "*"
-gooey = "*"
-argopt = "*"
 
 [requires]
 python_version = "3.6"
