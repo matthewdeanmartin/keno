@@ -236,7 +236,7 @@ def docs():
 def pip_check():
     execute("pip", "check")
     execute("safety", "check")
-    execute("safety", "check", "-r", "requirements_dev.txt")
+    execute("safety", "check", "-r", "requirements-dev.txt")
 
 @task(pip_check)
 def pin_dependencies():
