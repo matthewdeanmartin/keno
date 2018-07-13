@@ -114,3 +114,5 @@ docs/source/_templates/
 .secrets.baseline
 lint.txt
 .mypy_cache
+detect-secrets-results.txt
+mypy_errors.txt

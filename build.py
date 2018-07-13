@@ -24,6 +24,10 @@ from pyntcontrib import *
 
 PROJECT_NAME = "keno"
 IS_TRAVIS = 'TRAVIS' in os.environ
+if IS_TRAVIS:
+    PIPENV = ""
+else:
+    PIPENV = "pipenv run"
 
 from semantic_version import Version
 
@@ -228,6 +232,10 @@ def pip_check():
     execute("safety", "check")
     execute("safety", "check", "-r", "requirements_dev.txt")
 
+@task(pip_check)
+def pin_dependencies():
+    execute(*("{0} pipenv_to_requirements".format(PIPENV).strip().split(" ")))
+
 @task()
 @skip_if_no_change("compile_md")
 def compile_md():
@@ -236,15 +244,33 @@ def compile_md():
     #     return
     execute("pandoc", *("--from=markdown --to=rst --output=README.rst README.md".split(" ")))
 
-@task(docs, nose_tests, pip_check, compile, lint, compile_md)
-@skip_if_no_change("package")
-def package():
-    execute("python", "setup.py", "sdist", "--formats=gztar,zip")
-
 @task()
 @skip_if_no_change("mypy")
 def mypy():
-    execute("mypy", *("{0} --ignore-missing-imports --strict".format(PROJECT_NAME).split(" ")))
+    command = "{0} mypy {1} --ignore-missing-imports --strict".format(PIPENV, PROJECT_NAME).strip()
+    bash_process = subprocess.Popen(command.split(" "),
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE
+                                    )
+    out, err = bash_process.communicate()  # wait
+    errors_file_name ="mypy_errors.txt"
+    with open(errors_file_name, "w+") as errors_file:
+        lines = out.decode().split("\n")
+        for line in lines:
+            if "test.py" in line:
+                continue
+            if "tests.py" in line:
+                continue
+            if "/test_" in line:
+                continue
+            if "/tests_" in line:
+                continue
+            else:
+                errors_file.writelines([line + "\n"])
+
+    num_lines = sum(1 for line in open(errors_file_name) if line)
+    if num_lines > 20:
+        raise TypeError("Too many lines of mypy : {0}".format(num_lines))
 
 
 @task()
@@ -269,6 +295,13 @@ def detect_secrets():
         for result in data["results"]:
             print(result)
         raise TypeError("detect-secrets has discovered high entropy strings, possibly passwords?")
+
+
+@task(mypy, detect_secrets, pin_dependencies, docs, nose_tests, pip_check, compile, lint, compile_md)
+@skip_if_no_change("package")
+def package():
+    execute("python", "setup.py", "sdist", "--formats=gztar,zip")
+
 
 @task()
 def echo(*args, **kwargs):

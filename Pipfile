@@ -16,12 +16,13 @@ safety = "*"
 pbr = "*"
 black = "*"
 detect-secrets = "*"
+mypy = "*"
+pipenv-to-requirements = "*"
 
 [packages]
 docopt = "*"
 gooey = "*"
 argopt = "*"
-mypy = "*"
 
 [requires]
 python_version = "3.6"
