@@ -28,7 +28,7 @@ if IS_TRAVIS:
     PIPENV = ""
 else:
     PIPENV = "pipenv run"
-LIBS = []
+LIBS = ""
 
 from semantic_version import Version
 
