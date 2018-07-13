@@ -31,7 +31,7 @@ if IS_TRAVIS:
 else:
     PIPENV = "pipenv run"
 # generic for multi-targeting
-PYTHON = "python" 
+PYTHON = "python"
 LIBS = ""
 
 from semantic_version import Version
