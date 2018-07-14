@@ -18,6 +18,7 @@ black = "*"
 mypy = "*"
 pipenv-to-requirements = "*"
 detect-secrets = "*"
+sphinx-rtd-theme = "*"
 
 [packages]
 docopt = "*"

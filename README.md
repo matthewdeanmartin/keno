@@ -1,6 +1,11 @@
 # keno
 Maryland Keno simulations
 
+Badges
+------
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![Read the Docs](https://img.shields.io/readthedocs/pip.svg) ![Travis](https://img.shields.io/travis/USER/REPO.svg)
+
+
 Motivation
 ----------
 Unlike a numbers game (i.e. picking a number from 000 to 999), keno has many choices:
