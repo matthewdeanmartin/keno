@@ -321,6 +321,18 @@ def config_pythonpath():
 def package():
     execute("python", "setup.py", "sdist", "--formats=gztar,zip")
 
+@task()
+def xar():
+    # If you have homebrew installed, it's as easy as running brew
+    compression_format = "gzip" # zstd
+    command = "{0} setup.py bdist_xar --xar-compression-algorithm={1}".format(PYTHON, compression_format)
+    execute(*(command.split(" ")))
+    print("xar requires some complex installation https://code.fb.com/data-infrastructure/xars-a-more-efficient-open-source-system-for-self-contained-executables/")
+
+@task()
+def py2app():
+    command = "{0} setup.py py2app".format(PYTHON).strip()
+    execute(*(command.split(" ")))
 
 @task()
 def echo(*args, **kwargs):

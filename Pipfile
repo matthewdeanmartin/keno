@@ -19,6 +19,8 @@ mypy = "*"
 pipenv-to-requirements = "*"
 detect-secrets = "*"
 sphinx-rtd-theme = "*"
+xar = "*"
+"py2app" = "*"
 
 [packages]
 docopt = "*"

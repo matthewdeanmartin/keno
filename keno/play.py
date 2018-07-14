@@ -28,9 +28,6 @@ from docopt import docopt
 from keno.game_runner import GameRunner, Strategy, EvolutionParameters
 from keno.utility.stop_watch import Timer
 
-from gooey import Gooey
-
-@Gooey
 def run(args):
     """
     Set up to keep variables out of global namespace
@@ -57,6 +54,13 @@ def run(args):
     print(t.elapsed("Done!"))
 
 
-if __name__ == '__main__':
+def process_docopt():
+    """
+    Minimal setup for doc opt
+    :return:
+    """
     args = docopt(__doc__, argv=None, help=False, version='Keno 1.0.0', options_first=False)
     run(args)
+
+if __name__ == '__main__':
+    process_docopt()

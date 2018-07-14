@@ -3,12 +3,11 @@
 import codecs
 import os
 import sys
-from shutil import rmtree
-
 # WHAT A MESS.
 from distutils.core import setup, Command
+from shutil import rmtree
 
-from setuptools import find_packages #, setup, Command
+from setuptools import find_packages  # , setup, Command
 
 PROJECT_NAME = "keno"
 
@@ -25,40 +24,6 @@ if sys.argv[-1] == "publish":
 required = [
     'docopt'
 ]
-
-
-# https://pypi.python.org/pypi/stdeb/0.8.5#quickstart-2-just-tell-me-the-fastest-way-to-make-a-deb
-class DebCommand(Command):
-    """Support for setup.py deb"""
-    description = 'Build and publish the .deb package.'
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        try:
-            self.status('Removing previous builds…')
-            rmtree(os.path.join(here, 'deb_dist'))
-        except FileNotFoundError:
-            pass
-        self.status(u'Creating debian mainfest…')
-        os.system(
-            'python setup.py --command-packages=stdeb.command sdist_dsc -z artful --package3=' + PROJECT_NAME
-            # --depends3=python3-virtualenv-clone'
-        )
-        self.status(u'Building .deb…')
-        os.chdir('deb_dist/pipenv-{0}'.format(about['__version__']))
-        os.system('dpkg-buildpackage -rfakeroot -uc -us')
-
 
 class UploadCommand(Command):
     """Support setup.py publish."""
@@ -106,23 +71,27 @@ setup(
     packages=find_packages(exclude=['test']),
     entry_points={
         'console_scripts': [
-            # 'pipenv=pipenv:cli',
+            ['keno-sim=keno.play:main'],
         ]
     },
     install_requires=required,
     extras_require={},
     include_package_data=True,
     license='See git repo',
-    keywords="ui",
+    keywords="keno lottery gambling",
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
     ],
-    cmdclass={'upload': UploadCommand, 'deb': DebCommand},
+    cmdclass={'upload': UploadCommand},
     # setup_cfg=True,
     setup_requires=['pbr'],
     pbr=False,
 
-    data_files=[]
+    data_files=[],
+    app=[
+        dict(script="play_script.py")
+             # plist=plist),
+    ],
 )
