@@ -21,6 +21,7 @@ detect-secrets = "*"
 sphinx-rtd-theme = "*"
 xar = "*"
 "py2app" = "*"
+python-coveralls = "*"
 
 [packages]
 docopt = "*"
