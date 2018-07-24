@@ -11,7 +11,7 @@
 ################################################################################
 
 black==18.6b3
-bumpversion
+bumpversion==0.5.3
 checksumdir
 detect-secrets
 mypy
