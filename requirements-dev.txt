@@ -13,7 +13,7 @@
 black==18.6b3
 bumpversion==0.5.3
 checksumdir==1.1.4
-detect-secrets
+detect-secrets==0.9.1
 mypy
 nose
 pbr
