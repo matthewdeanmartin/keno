@@ -21,7 +21,7 @@ pipenv-to-requirements==0.5.1
 prospector==1.0
 pynt==0.8.2
 pynt-contrib==0.2.0
-safety
+safety==1.8.3
 semantic-version
 sphinx
 sphinx-rtd-theme
