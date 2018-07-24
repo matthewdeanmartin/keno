@@ -14,7 +14,7 @@ black==18.6b3
 bumpversion==0.5.3
 checksumdir==1.1.4
 detect-secrets==0.9.1
-mypy
+mypy==0.620
 nose
 pbr
 pipenv-to-requirements
