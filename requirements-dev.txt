@@ -23,5 +23,5 @@ pynt==0.8.2
 pynt-contrib==0.2.0
 safety==1.8.3
 semantic-version==2.6.0
-sphinx
+sphinx==1.7.6
 sphinx-rtd-theme
