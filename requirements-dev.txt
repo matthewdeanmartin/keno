@@ -17,7 +17,7 @@ detect-secrets==0.9.1
 mypy==0.620
 nose==1.3.7
 pbr==4.1.1
-pipenv-to-requirements
+pipenv-to-requirements==0.5.1
 prospector
 pynt
 pynt-contrib
