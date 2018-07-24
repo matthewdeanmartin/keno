@@ -10,7 +10,7 @@
 # `Pipfile.lock` and then regenerate `requirements*.txt`.
 ################################################################################
 
-black
+black==18.6b3
 bumpversion
 checksumdir
 detect-secrets
