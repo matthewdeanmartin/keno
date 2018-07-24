@@ -19,7 +19,7 @@ nose==1.3.7
 pbr==4.1.1
 pipenv-to-requirements==0.5.1
 prospector==1.0
-pynt
+pynt==0.8.2
 pynt-contrib
 safety
 semantic-version
