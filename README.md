@@ -3,7 +3,7 @@ Maryland Keno simulations
 
 Badges
 ------
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![Read the Docs](https://img.shields.io/readthedocs/pip.svg) ![Travis](https://travis-ci.com/matthewdeanmartin/keno.svg?branch=master)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE) ![Read the Docs](https://img.shields.io/readthedocs/pip.svg) ![Travis](https://travis-ci.com/matthewdeanmartin/keno.svg?branch=master) [![BCH compliance](https://bettercodehub.com/edge/badge/matthewdeanmartin/keno?branch=master)](https://bettercodehub.com/)
 
 
 Motivation
